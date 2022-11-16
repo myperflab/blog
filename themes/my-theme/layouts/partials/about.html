@@ -1,0 +1,33 @@
+<div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-times"></i>
+    </div>
+<!--      {{ .Scratch.Set "URL" "/" }}-->
+<!--  <p id="url">{{ .Scratch.Get "URL"}}</p>-->
+
+<!--      <img id="about-card-picture" src="http://localhost:1313/images/dp.png" alt="author xxx" />-->
+    <img id="about-card-picture" src="{{$.Site.Author.picturefqdn}}" alt="author xxx" />
+<!--    http://localhost:1313/"images/dp.png  "+ dp_image_url  -->
+
+    <!-- {{$.Site.Author.picture}} -->
+    <h4 id="about-card-name">{{ .Site.Author.name }}</h4>
+    {{ with .Site.Author.bio }}
+      <div id="about-card-bio">{{ . | markdownify }}</div>
+    {{ end }}
+    {{ with .Site.Author.job }}
+      <div id="about-card-job">
+        <i class="fa fa-briefcase"></i>
+        <br/>
+        {{ . | markdownify }}
+      </div>
+    {{ end }}
+    {{ with .Site.Author.location }}
+      <div id="about-card-location">
+        <i class="fa fa-map-marker-alt"></i>
+        <br/>
+        {{ . }}
+      </div>
+    {{ end }}
+  </div>
+</div>
