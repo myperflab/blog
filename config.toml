@@ -4,7 +4,7 @@ languageCode = "en-us"
 defaultContentLanguage = "en-us"
 title = "myPerfLab"
 theme = "my-theme"
-disqusShortname = "myPerfLab"
+# disqusShortname = "myPerfLab"
 # googleAnalytics = "UA-123-45"
 paginate = 7
 canonifyurls = true
@@ -32,8 +32,10 @@ canonifyurls = true
 # ------
 [author]
   name = "Pallavi & Shubham"
-  bio = "Super cool duo in love with each other"
+  bio = "Super cool Performance Engineer duo in love with each other"
   job = "Performance Engineer"
+  link_p= "https://www.linkedin.com/in/pallavi-shinde-35704764/"
+  link_s = "https://www.linkedin.com/in/shubham-sachan-74012058/"
   location = "Pune India"
   gravatarEmail = "shubhpal0203@gmail.com"
   picture = "images/dp.png"
@@ -77,11 +79,18 @@ canonifyurls = true
   pre = "<i class=\"sidebar-button-icon fas fa-lg fa-question\" aria-hidden=\"true\"></i>"
   url = "/#about"
 
+[[menu.links]]
+  weight = 1
+  identifier = "github"
+  name = "GitHub"
+  pre = "<i class=\"sidebar-button-icon fab fa-lg fa-github\" aria-hidden=\"true\"></i>"
+  url = "https://github.com/myperflab"
+
 #[[menu.links]]
 #  weight = 1
-#  identifier = "github"
-#  name = "GitHub"
-#  pre = "<i class=\"sidebar-button-icon fab fa-lg fa-github\" aria-hidden=\"true\"></i>"
+#  identifier = "linkedin"
+#  name = "linkedin"
+#  pre = "<i class=\"sidebar-button-icon fab fa-lg fa-linkedin\" aria-hidden=\"true\"></i>"
 #  url = "https://github.com/myperflab"
 
 #[[menu.links]]
@@ -335,8 +344,8 @@ canonifyurls = true
   # --------------
   [params.comment]
     [params.comment.disqus]
-      enable = true
-      shortname = "my-theme"
+      enable = false
+      shortname = "myperflab"
     [params.comment.gitalk]
       enable = false
       # clientId =
@@ -348,7 +357,7 @@ canonifyurls = true
         language = "en"
         perPage = 10
         distractionFreeMode = false
-        enableHotKey = true
+        enableHotKey = false
         pagerDirection = "first"
 
   # --------------------

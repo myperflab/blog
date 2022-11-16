@@ -15,19 +15,21 @@
     {{ with .Site.Author.bio }}
       <div id="about-card-bio">{{ . | markdownify }}</div>
     {{ end }}
-    {{ with .Site.Author.job }}
-      <div id="about-card-job">
-        <i class="fa fa-briefcase"></i>
-        <br/>
-        {{ . | markdownify }}
-      </div>
-    {{ end }}
-    {{ with .Site.Author.location }}
-      <div id="about-card-location">
-        <i class="fa fa-map-marker-alt"></i>
-        <br/>
-        {{ . }}
-      </div>
-    {{ end }}
+<!--    {{ with .Site.Author.job }}-->
+<!--      <div id="about-card-job">-->
+<!--        <i class="fa fa-briefcase"></i>-->
+<!--        <br/>-->
+<!--        {{ . | markdownify }}-->
+<!--      </div>-->
+<!--    {{ end }}-->
+    <div id="about-card-link_p"><p>Connect with them on linkedin </p><a href={{ .Site.Author.link_p  }}>Pallavi Shinde</a><p> </p> <a href={{ .Site.Author.link_s  }}>Shubham Sachan</a>
+    </div>
+<!--    {{ with .Site.Author.location }}-->
+<!--      <div id="about-card-location">-->
+<!--        <i class="fa fa-map-marker-alt"></i>-->
+<!--        <br/>-->
+<!--        {{ . }}-->
+<!--      </div>-->
+<!--    {{ end }}-->
   </div>
 </div>
