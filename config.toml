@@ -1,5 +1,5 @@
 # baseURL = "https://example.org/"
-baseURL = "http://myperflab.co.in/"
+baseURL = "https://myperflab.co.in/"
 languageCode = "en-us"
 defaultContentLanguage = "en-us"
 title = "myPerfLab"
@@ -37,7 +37,7 @@ canonifyurls = true
   location = "Pune India"
   gravatarEmail = "shubhpal0203@gmail.com"
   picture = "images/dp.png"
-  picturefqdn = "http://localhost:1313/images/dp.png"
+  picturefqdn = ""https://myperflab.co.in/images/dp.png"
   # Your Twitter username without the @. E.g : thibaudlepretre
   # twitter = "thibaudlepretre"
   # Your google plus profile id. E.g : +ThibaudLepretre or 114625208755123718311
