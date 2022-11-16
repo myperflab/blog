@@ -2,6 +2,7 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/bkp/hugo-tranquilpeak-theme" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/themes/bkp/hugo-tranquilpeak-theme" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/themes/hugo-tranquilpeak-theme" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/themes/my-theme" vcs="Git" />

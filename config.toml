@@ -1,4 +1,5 @@
-baseURL = "https://example.org/"
+# baseURL = "https://example.org/"
+baseURL = "https://myperflab.co.in/"
 languageCode = "en-us"
 defaultContentLanguage = "en-us"
 title = "myPerfLab"
