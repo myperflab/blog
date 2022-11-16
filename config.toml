@@ -37,7 +37,7 @@ canonifyurls = true
   location = "Pune India"
   gravatarEmail = "shubhpal0203@gmail.com"
   picture = "images/dp.png"
-  picturefqdn = ""https://myperflab.co.in/images/dp.png"
+  picturefqdn = "https://myperflab.co.in/images/dp.png"
   # Your Twitter username without the @. E.g : thibaudlepretre
   # twitter = "thibaudlepretre"
   # Your google plus profile id. E.g : +ThibaudLepretre or 114625208755123718311
@@ -105,7 +105,7 @@ canonifyurls = true
   # -----------
   # Description
   # -----------
-  description = "Hugo tranquilpeak theme demo"
+  description = "myperflab blog"
 
   # ------------------
   # Syntax highlighter
@@ -278,7 +278,7 @@ canonifyurls = true
   # ---------------
   # Comment and uncomment to enable or disable sharing options
   # If you wanna add a sharing option, read user documentation :
-  # Tranquilpeak configuration > Theme configuration > sharing-options
+  # theme configuration > Theme configuration > sharing-options
   [[params.sharingOptions]]
     name = "Facebook"
     icon = "fab fa-facebook-square"
@@ -336,7 +336,7 @@ canonifyurls = true
   [params.comment]
     [params.comment.disqus]
       enable = true
-      shortname = "hugo-tranquilpeak-theme"
+      shortname = "my-theme"
     [params.comment.gitalk]
       enable = false
       # clientId =
@@ -375,4 +375,5 @@ canonifyurls = true
 
 # my prams
 [params.myparams]
-  url = "http://localhost:1313/"
+ # url = "http://localhost:1313/"
+   url = "https://myperflab.co.in"
