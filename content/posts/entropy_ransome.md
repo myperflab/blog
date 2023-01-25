@@ -1,5 +1,5 @@
 ---
-title: "How File entropy can help in identifying ransomware attack"
+title: "How file entropy can help in identifying ransomware attack"
 thumbnailImagePosition: left
 thumbnailImage: /images/s1.jpeg
 date: 2023-01-10
