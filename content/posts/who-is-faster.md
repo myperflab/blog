@@ -4,8 +4,8 @@ thumbnailImagePosition: left
 thumbnailImage: /images/fj1.jpeg
 date: 2022-10-15
 categories:
-- perf engg
-- perf testing
+- performance engineering
+- performance testing
 tags:
 - python
 - asyncio
