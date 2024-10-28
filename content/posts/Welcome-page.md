@@ -14,7 +14,7 @@ coverImage: /images/welcome.png
 metaAlignment: center
 ---
 
-myPerfLab is a collective effort of Pallavi and Shubham who are performance engineer and would like to give back to society with their knowledge gathered over several years of working (on variety of projects) and vivid reading-learning plus exploration and provide their recommendation as per their experience and exploration   
+myPerfLab represents the first steps by Pallavi and Shubham to share their knowledge with the community. Through this initiative, they aim to provide insights and recommendations built on years of experience, varied project work, vivid reading & experimentation and continuous learning in performance engineering.
 <!--more-->
 
 <!---{{< toc >}} -->

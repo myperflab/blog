@@ -4,9 +4,9 @@ thumbnailImagePosition: left
 thumbnailImage: /images/s1.jpeg
 date: 2024-10-25
 categories:
-- Data Security
+- <category>
 tags:
-- Ransomware
+- <Tags>
 showPagination: true
 draft: False
 ---
