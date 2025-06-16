@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on myPerfLab</title>
+    <link>http://localhost:1313/tags/</link>
+    <description>Recent content in Tags on myPerfLab</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 10 May 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Performance Engineering</title>
+      <link>http://localhost:1313/tags/performance-engineering/</link>
+      <pubDate>Sat, 10 May 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/performance-engineering/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Performance Testing</title>
+      <link>http://localhost:1313/tags/performance-testing/</link>
+      <pubDate>Sat, 10 May 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/performance-testing/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Go Lang</title>
+      <link>http://localhost:1313/tags/go-lang/</link>
+      <pubDate>Mon, 09 Dec 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/go-lang/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>&lt;Tags&gt;</title>
+      <link>http://localhost:1313/tags/tags/</link>
+      <pubDate>Fri, 25 Oct 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/tags/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Data Structure</title>
+      <link>http://localhost:1313/tags/data-structure/</link>
+      <pubDate>Thu, 24 Oct 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/data-structure/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Auto Scaling</title>
+      <link>http://localhost:1313/tags/auto-scaling/</link>
+      <pubDate>Sun, 15 Jan 2023 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/auto-scaling/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Aws</title>
+      <link>http://localhost:1313/tags/aws/</link>
+      <pubDate>Sun, 15 Jan 2023 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/aws/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Ransomware</title>
+      <link>http://localhost:1313/tags/ransomware/</link>
+      <pubDate>Tue, 10 Jan 2023 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/ransomware/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Asyncio</title>
+      <link>http://localhost:1313/tags/asyncio/</link>
+      <pubDate>Sat, 15 Oct 2022 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/asyncio/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Multithreading</title>
+      <link>http://localhost:1313/tags/multithreading/</link>
+      <pubDate>Sat, 15 Oct 2022 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/multithreading/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Python</title>
+      <link>http://localhost:1313/tags/python/</link>
+      <pubDate>Sat, 15 Oct 2022 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/python/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Fio</title>
+      <link>http://localhost:1313/tags/fio/</link>
+      <pubDate>Wed, 20 Apr 2022 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/fio/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Linux</title>
+      <link>http://localhost:1313/tags/linux/</link>
+      <pubDate>Wed, 20 Apr 2022 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/linux/</guid>
+      <description></description>
+    </item>
+  </channel>
+</rss>

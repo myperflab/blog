@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Linux on myPerfLab</title>
+    <link>http://localhost:1313/tags/linux/</link>
+    <description>Recent content in Linux on myPerfLab</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 20 Apr 2022 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/linux/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>PE - Disk performance</title>
+      <link>http://localhost:1313/posts/fio/</link>
+      <pubDate>Wed, 20 Apr 2022 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/fio/</guid>
+      <description>Post performance test execution, the most common task we do is analyzing the server side performance metrics of the underlying hardware, performance statistics of the application (if we are capturing any) and client side performance metrics.&#xA;And if test results are meeting the SLA, well, shutdown the laptop and take a nap 😝&#xA;But in case SLA are not being met, we have two ways to look for :&#xA;Hardware performance and capacity Application architecture and bottlenecks Option#1: Hardware performance and capacity We usually capture the server side underlying hardware performance metrics which includes (basic ones) are CPU, Memory, Network and Disk performance stats.</description>
+    </item>
+  </channel>
+</rss>

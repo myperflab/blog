@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+    <script type="application/ld+json">
+
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "PE - Disk performance",
+  
+  "image": "http://localhost:1313/images/chinuk.jpeg",
+  
+  "datePublished": "2022-04-20T00:00:00Z",
+  "dateModified": "2022-04-20T00:00:00Z",
+  "author": {
+    "@type": "Person",
+    "name": "Pallavi \u0026 Shubham",
+    
+    "image": "http://localhost:1313/images/dp_new.png"
+    
+  },
+  "mainEntityOfPage": { 
+    "@type": "WebPage",
+    "@id": "http:\/\/localhost:1313\/posts\/fio\/" 
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "myPerfLab",
+    
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/images/dp_new.png"
+    }
+    
+  },
+  "description": "Post performance test execution, the most common task we do is analyzing the server side performance metrics of the underlying hardware, performance statistics of the application (if we are capturing any) and client side performance metrics.\nAnd if test results are meeting the SLA, well, shutdown the laptop and take a nap 😝\nBut in case SLA are not being met, we have two ways to look for :\nHardware performance and capacity Application architecture and bottlenecks Option#1: Hardware performance and capacity We usually capture the server side underlying hardware performance metrics which includes (basic ones) are CPU, Memory, Network and Disk performance stats.",
+  "keywords": []
+}
+
+</script>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.123.7 with theme Tranquilpeak 0.5.3-BETA">
+<meta name="author" content="Pallavi &amp; Shubham">
+<meta name="keywords" content="">
+<meta name="description" content="Post performance test execution, the most common task we do is analyzing the server side performance metrics of the underlying hardware, performance statistics of the application (if we are capturing any) and client side performance metrics.
+And if test results are meeting the SLA, well, shutdown the laptop and take a nap 😝
+But in case SLA are not being met, we have two ways to look for :
+Hardware performance and capacity Application architecture and bottlenecks Option#1: Hardware performance and capacity We usually capture the server side underlying hardware performance metrics which includes (basic ones) are CPU, Memory, Network and Disk performance stats.">
+
+
+<meta property="og:description" content="Post performance test execution, the most common task we do is analyzing the server side performance metrics of the underlying hardware, performance statistics of the application (if we are capturing any) and client side performance metrics.
+And if test results are meeting the SLA, well, shutdown the laptop and take a nap 😝
+But in case SLA are not being met, we have two ways to look for :
+Hardware performance and capacity Application architecture and bottlenecks Option#1: Hardware performance and capacity We usually capture the server side underlying hardware performance metrics which includes (basic ones) are CPU, Memory, Network and Disk performance stats.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PE - Disk performance">
+<meta name="twitter:title" content="PE - Disk performance">
+<meta property="og:url" content="http://localhost:1313/posts/fio/">
+<meta property="twitter:url" content="http://localhost:1313/posts/fio/">
+<meta property="og:site_name" content="myPerfLab">
+<meta property="og:description" content="Post performance test execution, the most common task we do is analyzing the server side performance metrics of the underlying hardware, performance statistics of the application (if we are capturing any) and client side performance metrics.
+And if test results are meeting the SLA, well, shutdown the laptop and take a nap 😝
+But in case SLA are not being met, we have two ways to look for :
+Hardware performance and capacity Application architecture and bottlenecks Option#1: Hardware performance and capacity We usually capture the server side underlying hardware performance metrics which includes (basic ones) are CPU, Memory, Network and Disk performance stats.">
+<meta name="twitter:description" content="Post performance test execution, the most common task we do is analyzing the server side performance metrics of the underlying hardware, performance statistics of the application (if we are capturing any) and client side performance metrics.
+And if test results are meeting the SLA, well, shutdown the laptop and take a nap 😝
+But in case SLA are not being met, we have two ways to look for :
+Hardware performance and capacity Application architecture and bottlenecks Option#1: Hardware performance and capacity We usually capture the server side underlying hardware performance metrics which includes (basic ones) are CPU, Memory, Network and Disk performance stats.">
+<meta property="og:locale" content="en-us">
+
+  
+    <meta property="article:published_time" content="2022-04-20T00:00:00">
+  
+  
+    <meta property="article:modified_time" content="2022-04-20T00:00:00">
+  
+  
+  
+    
+      <meta property="article:section" content="perf engg">
+    
+  
+  
+    
+      <meta property="article:tag" content="Linux">
+    
+      <meta property="article:tag" content="fio">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+
+
+  <meta property="og:image" content="https://www.gravatar.com/avatar/257da47f45d642c781b5d18b71badaa6?s=640">
+  <meta property="twitter:image" content="https://www.gravatar.com/avatar/257da47f45d642c781b5d18b71badaa6?s=640">
+
+
+
+
+
+  <meta property="og:image" content="http://localhost:1313/images/chinuk.jpeg">
+  <meta property="twitter:image" content="http://localhost:1313/images/chinuk.jpeg">
+
+
+    <title>PE - Disk performance</title>
+
+    <link rel="icon" href="http://localhost:1313/favicon.png">
+    
+
+    
+
+    <link rel="canonical" href="http://localhost:1313/posts/fio/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha512-H9jrZiiopUdsLpg94A333EfumgUBpO9MdbxStdeITo+KEIMaNfHNvwyjjDJb+ERPaRS6DpyRlKbvPUasNItRyw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    
+    
+    <link rel="stylesheet" href="http://localhost:1313/css/style-h6ccsoet3mzkbb0wngshlfbaweimexgqcxj0h5hu4h82olsdzz6wmqdkajm.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+
+
+
+  <body>
+
+    <div id="blog">
+      <header id="header" data-behavior="4">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+
+    <a class="header-title-link" href="http://localhost:1313/" aria-label=>myPerfLab</a>
+    
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="http://localhost:1313/#about" aria-label="Open the link: /#about">
+    
+    
+    
+      
+        <img class="header-picture" src="https://myperflab.co.in/images/dp_new.png" alt="Author&#39;s picture" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="4">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="http://localhost:1313/#about" aria-label="Read more about the author">
+          <img class="sidebar-profile-picture" src=https://myperflab.co.in/images/dp_new.png alt="Author&#39;s picture" />
+        </a>
+        <h4 class="sidebar-profile-name">Pallavi &amp; Shubham</h4>
+        
+          <h5 class="sidebar-profile-bio">Super cool Performance Engineer duo in love with each other</h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="http://localhost:1313/" title="Home">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-home" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">Home</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="http://localhost:1313/categories" title="Categories">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-bookmark" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">Categories</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="http://localhost:1313/tags" title="Tags">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-tags" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">Tags</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="http://localhost:1313/archives" title="Archives">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-archive" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">Archives</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="http://localhost:1313/#about" title="About">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-question" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">About</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/myperflab" target="_blank" rel="noopener" title="GitHub">
+    
+      <i class="sidebar-button-icon fab fa-lg fa-github" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="4"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" id="top">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title">
+      PE - Disk performance
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time datetime="2022-04-20T00:00:00Z">
+        
+  April 20, 2022
+
+      </time>
+    
+    
+  
+  
+    <span>in</span>
+    
+      <a class="category-link" href="http://localhost:1313/categories/perf-engg">perf engg</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown">
+            <div class="main-content-wrap">
+              <p>Post performance test execution, the most common task we do is analyzing the server side performance metrics of the underlying hardware, performance statistics of the application (if we are capturing any) and client side performance metrics.</p>
+<p>And if test results are meeting the SLA, well, shutdown the laptop and take a nap 😝</p>
+<p>But in case SLA are not being met, we have two ways to look for :</p>
+<ol>
+<li>Hardware performance and capacity</li>
+<li>Application architecture and bottlenecks</li>
+</ol>
+<h2 id="option1-hardware-performance-and-capacity">Option#1: Hardware performance and capacity</h2>
+<p>We usually capture the server side underlying hardware performance metrics which includes (basic ones) are CPU, Memory, Network and Disk performance stats. There are multiple tools and command line utility and tools which can capture the stats easily.</p>
+<p>To understand the hardware utilization during the test, we look for the various parameters based on the kind of issues, but often we over look the disk performance stats. Today, I am trying zoom in the disk performance how to conclude if the disk was the bottleneck.</p>
+<p>Lets assume, the application under test doing some IO operations on the disk, and you have following average numbers for disk (for example):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Disk Throughput-
+</span></span><span style="display:flex;"><span>	MB Read per sec: <span style="color:#ae81ff">10</span>
+</span></span><span style="display:flex;"><span>	MB Write per sec: <span style="color:#ae81ff">6</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Average disk queue length: <span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Disk Latency-
+</span></span><span style="display:flex;"><span>	Sec/read: 0.01 Sec 
+</span></span><span style="display:flex;"><span>	Sec/write: 0.05 Sec
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>IOPS: <span style="color:#ae81ff">2000</span>
+</span></span></code></pre></div><p><strong>Does the above numbers looks the bottleneck?</strong> This is the tough\big question. Theoretically it can be, as we see big disk queue length here. But it may be not.</p>
+<p>To avoid such confusion, we should test the disk performance separately. And based on those results, we may be able to say if the disk was slow or application is performing the IO operation either incorrectly or in unoptimized way.</p>
+<p>Thanks to Jens Axboe who has written a wonderful utility <strong>fio</strong> <strong>(Flexible IO Tester)</strong> to test the disk performance. This utility can be used across the platforms. for more details checkout the <a href="https://github.com/axboe/fio">git</a> page.</p>
+<p>This utility let us execute various types of tests, and provide detailed results. These results includes the following</p>
+<p>Bandwidth
+IOPS
+Latency
+CPU consumption</p>
+<h2 id="fio-flexible-io-tester"><strong>fio</strong> <strong>(Flexible IO Tester)</strong></h2>
+<p>We will go through the utility by running the  <strong>fio</strong> command and explaining the output:</p>
+<p>Note: I am using ubuntu Linux VM. and to install this, run the following</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo apt-get update
+</span></span><span style="display:flex;"><span>supd apt install fio
+</span></span></code></pre></div><p><strong>In Brief,  about fio:</strong> It is a tool that will spawn a number of threads or processes doing a particular type of IO action as specified by the user. fio takes a number of parameters\arguments (we will see in test sections), each inherited by the thread unless otherwise parameters given to them overriding that setting is given. The typical use of fio is to write a job file matching the IO load one wants to simulate.</p>
+<p>Let&rsquo;s begin our test:</p>
+<p><strong>Test#1</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>root@shubham-ubuntu:/home/ubuntu/disk2/fio_test# fio --name<span style="color:#f92672">=</span>formyblog --bs<span style="color:#f92672">=</span>4K --numjobs<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span> --size<span style="color:#f92672">=</span>20M --rw<span style="color:#f92672">=</span>randwrite --directory<span style="color:#f92672">=</span>/home/ubuntu/disk2/fio_test  --ioengine<span style="color:#f92672">=</span>libaio --group_reporting --iodepth<span style="color:#f92672">=</span><span style="color:#ae81ff">16</span> --direct<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>formyblog: <span style="color:#f92672">(</span>g<span style="color:#f92672">=</span>0<span style="color:#f92672">)</span>: rw<span style="color:#f92672">=</span>randwrite, bs<span style="color:#f92672">=(</span>R<span style="color:#f92672">)</span> 4096B-4096B, <span style="color:#f92672">(</span>W<span style="color:#f92672">)</span> 4096B-4096B, <span style="color:#f92672">(</span>T<span style="color:#f92672">)</span> 4096B-4096B, ioengine<span style="color:#f92672">=</span>libaio, iodepth<span style="color:#f92672">=</span><span style="color:#ae81ff">16</span>
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>fio-3.1
+</span></span><span style="display:flex;"><span>Starting <span style="color:#ae81ff">10</span> processes
+</span></span><span style="display:flex;"><span>formyblog: Laying out IO file <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> file / 20MiB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>formyblog: Laying out IO file <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> file / 20MiB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>formyblog: Laying out IO file <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> file / 20MiB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>formyblog: Laying out IO file <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> file / 20MiB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>formyblog: Laying out IO file <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> file / 20MiB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>formyblog: Laying out IO file <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> file / 20MiB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>formyblog: Laying out IO file <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> file / 20MiB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>formyblog: Laying out IO file <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> file / 20MiB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>formyblog: Laying out IO file <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> file / 20MiB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>formyblog: Laying out IO file <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> file / 20MiB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Jobs: <span style="color:#ae81ff">4</span> <span style="color:#f92672">(</span>f<span style="color:#f92672">=</span>4<span style="color:#f92672">)</span>: <span style="color:#f92672">[</span>_<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>,w<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,w<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>3<span style="color:#f92672">)</span>,w<span style="color:#f92672">(</span>1<span style="color:#f92672">)][</span>75.0%<span style="color:#f92672">][</span>r<span style="color:#f92672">=</span>0KiB/s,w<span style="color:#f92672">=</span>44.1MiB/s<span style="color:#f92672">][</span>r<span style="color:#f92672">=</span>0,w<span style="color:#f92672">=</span>11.3k IOPS<span style="color:#f92672">][</span>eta 00m:02s<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>formyblog: <span style="color:#f92672">(</span>groupid<span style="color:#f92672">=</span>0, jobs<span style="color:#f92672">=</span>10<span style="color:#f92672">)</span>: err<span style="color:#f92672">=</span> 0: pid<span style="color:#f92672">=</span>12832: Sun Jul <span style="color:#ae81ff">25</span> 23:13:55 <span style="color:#ae81ff">2021</span>
+</span></span><span style="display:flex;"><span>  write: IOPS<span style="color:#f92672">=</span>10.4k, BW<span style="color:#f92672">=</span>40.6MiB/s <span style="color:#f92672">(</span>42.6MB/s<span style="color:#f92672">)(</span>200MiB/4926msec<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    slat <span style="color:#f92672">(</span>usec<span style="color:#f92672">)</span>: min<span style="color:#f92672">=</span>3, max<span style="color:#f92672">=</span>103545, avg<span style="color:#f92672">=</span>144.65, stdev<span style="color:#f92672">=</span>1979.41
+</span></span><span style="display:flex;"><span>    clat <span style="color:#f92672">(</span>usec<span style="color:#f92672">)</span>: min<span style="color:#f92672">=</span>125, max<span style="color:#f92672">=</span>534672, avg<span style="color:#f92672">=</span>13684.88, stdev<span style="color:#f92672">=</span>35875.24
+</span></span><span style="display:flex;"><span>     lat <span style="color:#f92672">(</span>usec<span style="color:#f92672">)</span>: min<span style="color:#f92672">=</span>141, max<span style="color:#f92672">=</span>534680, avg<span style="color:#f92672">=</span>13829.90, stdev<span style="color:#f92672">=</span>36182.32
+</span></span><span style="display:flex;"><span>    clat percentiles <span style="color:#f92672">(</span>usec<span style="color:#f92672">)</span>:
+</span></span><span style="display:flex;"><span>     |  1.00th<span style="color:#f92672">=[</span>   247<span style="color:#f92672">]</span>,  5.00th<span style="color:#f92672">=[</span>   363<span style="color:#f92672">]</span>, 10.00th<span style="color:#f92672">=[</span>   461<span style="color:#f92672">]</span>, 20.00th<span style="color:#f92672">=[</span>   709<span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>     | 30.00th<span style="color:#f92672">=[</span>  1012<span style="color:#f92672">]</span>, 40.00th<span style="color:#f92672">=[</span>  1549<span style="color:#f92672">]</span>, 50.00th<span style="color:#f92672">=[</span>  2933<span style="color:#f92672">]</span>, 60.00th<span style="color:#f92672">=[</span>  5538<span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>     | 70.00th<span style="color:#f92672">=[</span>  8160<span style="color:#f92672">]</span>, 80.00th<span style="color:#f92672">=[</span> 12911<span style="color:#f92672">]</span>, 90.00th<span style="color:#f92672">=[</span> 22152<span style="color:#f92672">]</span>, 95.00th<span style="color:#f92672">=[</span> 70779<span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>     | 99.00th<span style="color:#f92672">=[</span>185598<span style="color:#f92672">]</span>, 99.50th<span style="color:#f92672">=[</span>231736<span style="color:#f92672">]</span>, 99.90th<span style="color:#f92672">=[</span>341836<span style="color:#f92672">]</span>, 99.95th<span style="color:#f92672">=[</span>341836<span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>     | 99.99th<span style="color:#f92672">=[</span>534774<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>   bw <span style="color:#f92672">(</span>  KiB/s<span style="color:#f92672">)</span>: min<span style="color:#f92672">=</span>  128, max<span style="color:#f92672">=</span>16432, per<span style="color:#f92672">=</span>9.80%, avg<span style="color:#f92672">=</span>4073.95, stdev<span style="color:#f92672">=</span>4261.40, samples<span style="color:#f92672">=</span><span style="color:#ae81ff">86</span>
+</span></span><span style="display:flex;"><span>   iops        : min<span style="color:#f92672">=</span>   32, max<span style="color:#f92672">=</span> 4108, avg<span style="color:#f92672">=</span>1018.34, stdev<span style="color:#f92672">=</span>1065.36, samples<span style="color:#f92672">=</span><span style="color:#ae81ff">86</span>
+</span></span><span style="display:flex;"><span>  lat <span style="color:#f92672">(</span>usec<span style="color:#f92672">)</span>   : 250<span style="color:#f92672">=</span>1.09%, 500<span style="color:#f92672">=</span>10.94%, 750<span style="color:#f92672">=</span>9.42%, 1000<span style="color:#f92672">=</span>8.29%
+</span></span><span style="display:flex;"><span>  lat <span style="color:#f92672">(</span>msec<span style="color:#f92672">)</span>   : 2<span style="color:#f92672">=</span>14.37%, 4<span style="color:#f92672">=</span>9.56%, 10<span style="color:#f92672">=</span>19.87%, 20<span style="color:#f92672">=</span>15.05%, 50<span style="color:#f92672">=</span>5.85%
+</span></span><span style="display:flex;"><span>  lat <span style="color:#f92672">(</span>msec<span style="color:#f92672">)</span>   : 100<span style="color:#f92672">=</span>1.37%, 250<span style="color:#f92672">=</span>3.87%, 500<span style="color:#f92672">=</span>0.30%, 750<span style="color:#f92672">=</span>0.03%
+</span></span><span style="display:flex;"><span>  cpu          : usr<span style="color:#f92672">=</span>0.40%, sys<span style="color:#f92672">=</span>4.20%, ctx<span style="color:#f92672">=</span>30632, majf<span style="color:#f92672">=</span>0, minf<span style="color:#f92672">=</span><span style="color:#ae81ff">105</span>
+</span></span><span style="display:flex;"><span>  IO depths    : 1<span style="color:#f92672">=</span>0.1%, 2<span style="color:#f92672">=</span>0.1%, 4<span style="color:#f92672">=</span>0.1%, 8<span style="color:#f92672">=</span>0.2%, 16<span style="color:#f92672">=</span>99.7%, 32<span style="color:#f92672">=</span>0.0%, &gt;<span style="color:#f92672">=</span>64<span style="color:#f92672">=</span>0.0%
+</span></span><span style="display:flex;"><span>     submit    : 0<span style="color:#f92672">=</span>0.0%, 4<span style="color:#f92672">=</span>100.0%, 8<span style="color:#f92672">=</span>0.0%, 16<span style="color:#f92672">=</span>0.0%, 32<span style="color:#f92672">=</span>0.0%, 64<span style="color:#f92672">=</span>0.0%, &gt;<span style="color:#f92672">=</span>64<span style="color:#f92672">=</span>0.0%
+</span></span><span style="display:flex;"><span>     complete  : 0<span style="color:#f92672">=</span>0.0%, 4<span style="color:#f92672">=</span>100.0%, 8<span style="color:#f92672">=</span>0.0%, 16<span style="color:#f92672">=</span>0.1%, 32<span style="color:#f92672">=</span>0.0%, 64<span style="color:#f92672">=</span>0.0%, &gt;<span style="color:#f92672">=</span>64<span style="color:#f92672">=</span>0.0%
+</span></span><span style="display:flex;"><span>     issued rwt: total<span style="color:#f92672">=</span>0,51200,0, short<span style="color:#f92672">=</span>0,0,0, dropped<span style="color:#f92672">=</span>0,0,0
+</span></span><span style="display:flex;"><span>     latency   : target<span style="color:#f92672">=</span>0, window<span style="color:#f92672">=</span>0, percentile<span style="color:#f92672">=</span>100.00%, depth<span style="color:#f92672">=</span><span style="color:#ae81ff">16</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Run status group <span style="color:#ae81ff">0</span> <span style="color:#f92672">(</span>all jobs<span style="color:#f92672">)</span>:
+</span></span><span style="display:flex;"><span>  WRITE: bw<span style="color:#f92672">=</span>40.6MiB/s <span style="color:#f92672">(</span>42.6MB/s<span style="color:#f92672">)</span>, 40.6MiB/s-40.6MiB/s <span style="color:#f92672">(</span>42.6MB/s-42.6MB/s<span style="color:#f92672">)</span>, io<span style="color:#f92672">=</span>200MiB <span style="color:#f92672">(</span>210MB<span style="color:#f92672">)</span>, run<span style="color:#f92672">=</span>4926-4926msec
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Disk stats <span style="color:#f92672">(</span>read/write<span style="color:#f92672">)</span>:
+</span></span><span style="display:flex;"><span>  sdb: ios<span style="color:#f92672">=</span>0/46893, merge<span style="color:#f92672">=</span>0/1320, ticks<span style="color:#f92672">=</span>0/602152, in_queue<span style="color:#f92672">=</span>602644, util<span style="color:#f92672">=</span>92.72%
+</span></span></code></pre></div><p>Let&rsquo;s understand all the input arguments\parameters and output\results line by line:</p>
+<h3 id="executed-command">Executed command:</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>fio --name<span style="color:#f92672">=</span>formyblog --bs<span style="color:#f92672">=</span>4K --numjobs<span style="color:#f92672">=</span><span style="color:#ae81ff">10</span> --size<span style="color:#f92672">=</span>20M --rw<span style="color:#f92672">=</span>randwrite --directory<span style="color:#f92672">=</span>/home/ubuntu/disk2/fio_test  --ioengine<span style="color:#f92672">=</span>libaio --group_reporting --iodepth<span style="color:#f92672">=</span><span style="color:#ae81ff">16</span> --direct<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</span></span></code></pre></div><p><strong>Command line arguments:</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>--name: Test Name, its better to give name of the test. Results of the test can be save into a file
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>--bs: block size. 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>--numjobs: number of parallel jobs. inabove example, we have <span style="color:#ae81ff">10</span> jobs, each job will write 
+</span></span><span style="display:flex;"><span>		<span style="color:#f92672">(</span>randomly<span style="color:#f92672">)</span> <span style="color:#ae81ff">20</span> MB <span style="color:#f92672">(</span>--size<span style="color:#f92672">)</span> in block size of <span style="color:#ae81ff">4</span> KB <span style="color:#f92672">(</span>--bs<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>--size: size <span style="color:#66d9ef">for</span> which we are running the test.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>--rw: to define Sequential or Random either read or write or both.
+</span></span><span style="display:flex;"><span>		various available option <span style="color:#66d9ef">for</span> rw:
+</span></span><span style="display:flex;"><span>				read:Sequential reading
+</span></span><span style="display:flex;"><span>				write:Sequential Write
+</span></span><span style="display:flex;"><span>				randread:random reading
+</span></span><span style="display:flex;"><span>				randwrite:random writing
+</span></span><span style="display:flex;"><span>				readwrite:Mixed, sequential workload
+</span></span><span style="display:flex;"><span>				randrw:Mixed Random Workload
+</span></span><span style="display:flex;"><span>		By default, <span style="color:#66d9ef">for</span> a mixed workload, the read and write percentages are set to 50% / 50%.
+</span></span><span style="display:flex;"><span>		In order to achieve a different distribution <span style="color:#f92672">(</span>%<span style="color:#f92672">)</span>, the parameter ” –rwmixread” or ” –rwmixwrite ”
+</span></span><span style="display:flex;"><span>		can also be specified.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>--director: path of the dir where it does read<span style="color:#ae81ff">\w</span>rite operations. its very important to define
+</span></span><span style="display:flex;"><span>		path. We can specify a number of directories by separating the names with a ‘:’ character.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>--group_reporting: to publish the results grouped together. <span style="color:#66d9ef">if</span> we dont use it , 
+</span></span><span style="display:flex;"><span>	we will get result separatly <span style="color:#66d9ef">for</span> each job.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>--iodepth: number of IOs issues to the OS at any given time. BE vary aware that, this is not 
+</span></span><span style="display:flex;"><span>		equivalent ot OS IO depth, and this setting is entirely application side. combining both 
+</span></span><span style="display:flex;"><span>		<span style="color:#e6db74">&#34;--numjobs=x&#34;</span> and this parameter, fio can issues x parallel jobs and each job can issue
+</span></span><span style="display:flex;"><span>		<span style="color:#e6db74">&#34;--iodepth=y&#34;</span> y IO at any given time. 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>--ioengine: Defines how the job issues I/O. There are many, few are like:
+</span></span><span style="display:flex;"><span>		mmpa, sync, psync, libaio, vsync, posixaio etc.
+</span></span><span style="display:flex;"><span>		libaio: Linux native asynchronous I/O. Note: <span style="color:#66d9ef">for</span> async IO beahaviour <span style="color:#e6db74">&#34;--direct=1&#34;</span> arg is required,
+</span></span><span style="display:flex;"><span>		because the page cache can not be addressed asynchronously under Linux.
+</span></span><span style="display:flex;"><span>	
+</span></span></code></pre></div><p>There are other various arguments which can be used, few are given below. Except a very unordinary test, these arguments are more than enough for a performance engineer, but don&rsquo;t restricts to these only and try to explore as much as you can. Easiest way is to go through fio documentations. There are many source, few can be found in the reference section at the bottom of this page.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>--zero_buffers: Initialise buffers with all zeros. Default: fill buffers with random data.
+</span></span><span style="display:flex;"><span>		usually fio generate random data <span style="color:#f92672">(</span>compressible<span style="color:#f92672">)</span> before the disk IO operations and keep into buffers.
+</span></span><span style="display:flex;"><span>		incase we want to avoid compression effect during the test, we can direct fio torefill the buffers 
+</span></span><span style="display:flex;"><span>		afer every IO submit with the the help of <span style="color:#e6db74">&#34;-–refill_buffers&#34;</span> arguments.
+</span></span><span style="display:flex;"><span>	
+</span></span><span style="display:flex;"><span>--runtime: <span style="color:#f92672">(</span>deafult unit second<span style="color:#f92672">)</span> Tell fio to terminate processing after the specified period of time. 
+</span></span><span style="display:flex;"><span>		It can be quite hard to determine <span style="color:#66d9ef">for</span> how long a specified job will run, so this parameter is 
+</span></span><span style="display:flex;"><span>		handy to cap the total runtime to a given time. 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>--time_based: If set, fio will run <span style="color:#66d9ef">for</span> the duration of the runtime specified even <span style="color:#66d9ef">if</span> the file
+</span></span><span style="display:flex;"><span>		are completely read or written. It will simply loop over the same workload as many times as 
+</span></span><span style="display:flex;"><span>		the runtime allows.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>--output<span style="color:#f92672">=</span>filename <span style="color:#f92672">(</span>Write output to file filename.<span style="color:#f92672">)</span>. this can also be achived simply putting 
+</span></span><span style="display:flex;"><span>			<span style="color:#e6db74">&#34;&gt;&gt;&#34;</span> at the end and giveng file name.
+</span></span></code></pre></div><h3 id="command-output">Command Output:</h3>
+<p>When fio test starts, it create the parallel process and send the updates of each threads, but not all the update you will see on the console. Like the below one these. logs are indicates the job is running.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>formyblog: <span style="color:#f92672">(</span>g<span style="color:#f92672">=</span>0<span style="color:#f92672">)</span>: rw<span style="color:#f92672">=</span>randwrite, bs<span style="color:#f92672">=(</span>R<span style="color:#f92672">)</span> 4096B-4096B, <span style="color:#f92672">(</span>W<span style="color:#f92672">)</span> 4096B-4096B, <span style="color:#f92672">(</span>T<span style="color:#f92672">)</span> 4096B-4096B, ioengine<span style="color:#f92672">=</span>libaio, iodepth<span style="color:#f92672">=</span><span style="color:#ae81ff">16</span>
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>fio-3.1
+</span></span><span style="display:flex;"><span>Starting <span style="color:#ae81ff">10</span> processes
+</span></span><span style="display:flex;"><span>formyblog: Laying out IO file <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> file / 20MiB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>formyblog: Laying out IO file <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> file / 20MiB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>formyblog: Laying out IO file <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> file / 20MiB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>formyblog: Laying out IO file <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> file / 20MiB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>formyblog: Laying out IO file <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> file / 20MiB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>formyblog: Laying out IO file <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> file / 20MiB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>formyblog: Laying out IO file <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> file / 20MiB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>formyblog: Laying out IO file <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> file / 20MiB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>formyblog: Laying out IO file <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> file / 20MiB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>formyblog: Laying out IO file <span style="color:#f92672">(</span><span style="color:#ae81ff">1</span> file / 20MiB<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>Jobs: <span style="color:#ae81ff">4</span> <span style="color:#f92672">(</span>f<span style="color:#f92672">=</span>4<span style="color:#f92672">)</span>: <span style="color:#f92672">[</span>_<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>,w<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,w<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>3<span style="color:#f92672">)</span>,w<span style="color:#f92672">(</span>1<span style="color:#f92672">)][</span>75.0%<span style="color:#f92672">][</span>r<span style="color:#f92672">=</span>0KiB/s,w<span style="color:#f92672">=</span>44.1MiB/s<span style="color:#f92672">][</span>r<span style="color:#f92672">=</span>0,w<span style="color:#f92672">=</span>11.3k IOPS<span style="color:#f92672">][</span>eta 00m:02s<span style="color:#f92672">]</span>
+</span></span></code></pre></div><p>Last line of the above is the update\status from each process started above. Actual output of the fio starts after this string.</p>
+<p>In the last line of above, r=0 stands for read is 0, as we are doing write io operation, value of r will be zero. w stands for write.</p>
+<p>The next set lines of the output (pasted below for easy access) is not the summary of all the jobs, <strong>instead these lines belong to one of the multiple jobs (&ndash;numjobs=10 in our case).</strong> If you see the &ldquo;pid&rdquo; it belongs to one job. But few parameters in the output are either summary or aggregated value of the all jobs. e.g. &ldquo;BW&rdquo; (e.g. BW=40.6MiB/s) is the aggregated value of all the jobs, but &ldquo;bw&rdquo; (e.g. bw (  KiB/s): min=  128&hellip;) is only for a particular job. Similarly IOPS and iops, give a thought.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>formyblog: <span style="color:#f92672">(</span>groupid<span style="color:#f92672">=</span>0, jobs<span style="color:#f92672">=</span>10<span style="color:#f92672">)</span>: err<span style="color:#f92672">=</span> 0: pid<span style="color:#f92672">=</span>12832: Sun Jul <span style="color:#ae81ff">25</span> 23:13:55 <span style="color:#ae81ff">2021</span>
+</span></span><span style="display:flex;"><span>  write: IOPS<span style="color:#f92672">=</span>10.4k, BW<span style="color:#f92672">=</span>40.6MiB/s <span style="color:#f92672">(</span>42.6MB/s<span style="color:#f92672">)(</span>200MiB/4926msec<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    slat <span style="color:#f92672">(</span>usec<span style="color:#f92672">)</span>: min<span style="color:#f92672">=</span>3, max<span style="color:#f92672">=</span>103545, avg<span style="color:#f92672">=</span>144.65, stdev<span style="color:#f92672">=</span>1979.41
+</span></span><span style="display:flex;"><span>    clat <span style="color:#f92672">(</span>usec<span style="color:#f92672">)</span>: min<span style="color:#f92672">=</span>125, max<span style="color:#f92672">=</span>534672, avg<span style="color:#f92672">=</span>13684.88, stdev<span style="color:#f92672">=</span>35875.24
+</span></span><span style="display:flex;"><span>     lat <span style="color:#f92672">(</span>usec<span style="color:#f92672">)</span>: min<span style="color:#f92672">=</span>141, max<span style="color:#f92672">=</span>534680, avg<span style="color:#f92672">=</span>13829.90, stdev<span style="color:#f92672">=</span>36182.32
+</span></span><span style="display:flex;"><span>    clat percentiles <span style="color:#f92672">(</span>usec<span style="color:#f92672">)</span>:
+</span></span><span style="display:flex;"><span>     |  1.00th<span style="color:#f92672">=[</span>   247<span style="color:#f92672">]</span>,  5.00th<span style="color:#f92672">=[</span>   363<span style="color:#f92672">]</span>, 10.00th<span style="color:#f92672">=[</span>   461<span style="color:#f92672">]</span>, 20.00th<span style="color:#f92672">=[</span>   709<span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>     | 30.00th<span style="color:#f92672">=[</span>  1012<span style="color:#f92672">]</span>, 40.00th<span style="color:#f92672">=[</span>  1549<span style="color:#f92672">]</span>, 50.00th<span style="color:#f92672">=[</span>  2933<span style="color:#f92672">]</span>, 60.00th<span style="color:#f92672">=[</span>  5538<span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>     | 70.00th<span style="color:#f92672">=[</span>  8160<span style="color:#f92672">]</span>, 80.00th<span style="color:#f92672">=[</span> 12911<span style="color:#f92672">]</span>, 90.00th<span style="color:#f92672">=[</span> 22152<span style="color:#f92672">]</span>, 95.00th<span style="color:#f92672">=[</span> 70779<span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>     | 99.00th<span style="color:#f92672">=[</span>185598<span style="color:#f92672">]</span>, 99.50th<span style="color:#f92672">=[</span>231736<span style="color:#f92672">]</span>, 99.90th<span style="color:#f92672">=[</span>341836<span style="color:#f92672">]</span>, 99.95th<span style="color:#f92672">=[</span>341836<span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>     | 99.99th<span style="color:#f92672">=[</span>534774<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>   bw <span style="color:#f92672">(</span>  KiB/s<span style="color:#f92672">)</span>: min<span style="color:#f92672">=</span>  128, max<span style="color:#f92672">=</span>16432, per<span style="color:#f92672">=</span>9.80%, avg<span style="color:#f92672">=</span>4073.95, stdev<span style="color:#f92672">=</span>4261.40, samples<span style="color:#f92672">=</span><span style="color:#ae81ff">86</span>
+</span></span><span style="display:flex;"><span>   iops        : min<span style="color:#f92672">=</span>   32, max<span style="color:#f92672">=</span> 4108, avg<span style="color:#f92672">=</span>1018.34, stdev<span style="color:#f92672">=</span>1065.36, samples<span style="color:#f92672">=</span><span style="color:#ae81ff">86</span>
+</span></span><span style="display:flex;"><span>  lat <span style="color:#f92672">(</span>usec<span style="color:#f92672">)</span>   : 250<span style="color:#f92672">=</span>1.09%, 500<span style="color:#f92672">=</span>10.94%, 750<span style="color:#f92672">=</span>9.42%, 1000<span style="color:#f92672">=</span>8.29%
+</span></span><span style="display:flex;"><span>  lat <span style="color:#f92672">(</span>msec<span style="color:#f92672">)</span>   : 2<span style="color:#f92672">=</span>14.37%, 4<span style="color:#f92672">=</span>9.56%, 10<span style="color:#f92672">=</span>19.87%, 20<span style="color:#f92672">=</span>15.05%, 50<span style="color:#f92672">=</span>5.85%
+</span></span><span style="display:flex;"><span>  lat <span style="color:#f92672">(</span>msec<span style="color:#f92672">)</span>   : 100<span style="color:#f92672">=</span>1.37%, 250<span style="color:#f92672">=</span>3.87%, 500<span style="color:#f92672">=</span>0.30%, 750<span style="color:#f92672">=</span>0.03%
+</span></span><span style="display:flex;"><span>  cpu          : usr<span style="color:#f92672">=</span>0.40%, sys<span style="color:#f92672">=</span>4.20%, ctx<span style="color:#f92672">=</span>30632, majf<span style="color:#f92672">=</span>0, minf<span style="color:#f92672">=</span><span style="color:#ae81ff">105</span>
+</span></span><span style="display:flex;"><span>  IO depths    : 1<span style="color:#f92672">=</span>0.1%, 2<span style="color:#f92672">=</span>0.1%, 4<span style="color:#f92672">=</span>0.1%, 8<span style="color:#f92672">=</span>0.2%, 16<span style="color:#f92672">=</span>99.7%, 32<span style="color:#f92672">=</span>0.0%, &gt;<span style="color:#f92672">=</span>64<span style="color:#f92672">=</span>0.0%
+</span></span><span style="display:flex;"><span>     submit    : 0<span style="color:#f92672">=</span>0.0%, 4<span style="color:#f92672">=</span>100.0%, 8<span style="color:#f92672">=</span>0.0%, 16<span style="color:#f92672">=</span>0.0%, 32<span style="color:#f92672">=</span>0.0%, 64<span style="color:#f92672">=</span>0.0%, &gt;<span style="color:#f92672">=</span>64<span style="color:#f92672">=</span>0.0%
+</span></span><span style="display:flex;"><span>     complete  : 0<span style="color:#f92672">=</span>0.0%, 4<span style="color:#f92672">=</span>100.0%, 8<span style="color:#f92672">=</span>0.0%, 16<span style="color:#f92672">=</span>0.1%, 32<span style="color:#f92672">=</span>0.0%, 64<span style="color:#f92672">=</span>0.0%, &gt;<span style="color:#f92672">=</span>64<span style="color:#f92672">=</span>0.0%
+</span></span><span style="display:flex;"><span>     issued rwt: total<span style="color:#f92672">=</span>0,51200,0, short<span style="color:#f92672">=</span>0,0,0, dropped<span style="color:#f92672">=</span>0,0,0
+</span></span><span style="display:flex;"><span>     latency   : target<span style="color:#f92672">=</span>0, window<span style="color:#f92672">=</span>0, percentile<span style="color:#f92672">=</span>100.00%, depth<span style="color:#f92672">=</span><span style="color:#ae81ff">16</span>
+</span></span></code></pre></div><p><strong>Line (1) (from the above): &ldquo;formyblog: (groupid=0, jobs=10): err= 0: pid=12832: Sun Jul 25 23:13:55 2021&rdquo;</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>formyblog: is the test name we have given as argument.
+</span></span><span style="display:flex;"><span>grooupid: by deafult it is 0. 
+</span></span><span style="display:flex;"><span>err: Error count <span style="color:#66d9ef">if</span> occured, esle it will be zero
+</span></span><span style="display:flex;"><span>pid: Proicess Id of the fio test
+</span></span><span style="display:flex;"><span>at the enf we get the time when job starts
+</span></span></code></pre></div><p><strong>Line (2): &ldquo;write: IOPS=10.4k, BW=40.6MiB/s (42.6MB/s)(200MiB/4926msec)&rdquo;</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>as we have executed write operation <span style="color:#f92672">(</span>--rw<span style="color:#f92672">=</span>randwrite<span style="color:#f92672">)</span> we get write IOPS and Bandwidth <span style="color:#f92672">(</span>BW<span style="color:#f92672">)</span>
+</span></span></code></pre></div><p><strong>Line (3, 4, 5 ): slat, clat and lat</strong></p>
+<p><strong>&ldquo;slat (usec): min=3, max=103545, avg=144.65, stdev=1979.41&rdquo;
+&ldquo;clat (usec): min=125, max=534672, avg=13684.88, stdev=35875.24&rdquo;
+&ldquo;lat (usec): min=141, max=534680, avg=13829.90, stdev=36182.32&rdquo;</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>slat: **Submission  latency** <span style="color:#f92672">(</span>min, max, avg and stdev as name suggest are minimum, maximum, average and standard 
+</span></span><span style="display:flex;"><span>		deviation<span style="color:#f92672">)</span>. This is the time it took to submit the I/O. For sync I/O  this  row  is  not displayed as the 
+</span></span><span style="display:flex;"><span>		slat is really the completion latency <span style="color:#f92672">(</span>since queue/complete is one operation there<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>clat: **Completion latency**. This denotes the time from submission to  completion  of  the I/O pieces. 
+</span></span><span style="display:flex;"><span>		For sync I/O, clat will usually be equal <span style="color:#f92672">(</span>or very close<span style="color:#f92672">)</span> to 0, as the time from submit to complete is 
+</span></span><span style="display:flex;"><span>		basically just CPU time <span style="color:#f92672">(</span>I/O has already been <span style="color:#66d9ef">done</span>, see slat explanation<span style="color:#f92672">)</span>.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>lat: **Total latency**. This denotes the time from when fio created the I/O  unit to completion of the I/O operation.
+</span></span></code></pre></div><p>For a high-level disk perf understanding, <strong>lat</strong> is pretty much enough to make conclusion.</p>
+<p><strong>Line 6: clat</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>clat percentiles <span style="color:#f92672">(</span>usec<span style="color:#f92672">)</span>:
+</span></span><span style="display:flex;"><span>     |  1.00th<span style="color:#f92672">=[</span>   247<span style="color:#f92672">]</span>,  5.00th<span style="color:#f92672">=[</span>   363<span style="color:#f92672">]</span>, 10.00th<span style="color:#f92672">=[</span>   461<span style="color:#f92672">]</span>, 20.00th<span style="color:#f92672">=[</span>   709<span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>     | 30.00th<span style="color:#f92672">=[</span>  1012<span style="color:#f92672">]</span>, 40.00th<span style="color:#f92672">=[</span>  1549<span style="color:#f92672">]</span>, 50.00th<span style="color:#f92672">=[</span>  2933<span style="color:#f92672">]</span>, 60.00th<span style="color:#f92672">=[</span>  5538<span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>     | 70.00th<span style="color:#f92672">=[</span>  8160<span style="color:#f92672">]</span>, 80.00th<span style="color:#f92672">=[</span> 12911<span style="color:#f92672">]</span>, 90.00th<span style="color:#f92672">=[</span> 22152<span style="color:#f92672">]</span>, 95.00th<span style="color:#f92672">=[</span> 70779<span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>     | 99.00th<span style="color:#f92672">=[</span>185598<span style="color:#f92672">]</span>, 99.50th<span style="color:#f92672">=[</span>231736<span style="color:#f92672">]</span>, 99.90th<span style="color:#f92672">=[</span>341836<span style="color:#f92672">]</span>, 99.95th<span style="color:#f92672">=[</span>341836<span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>     | 99.99th<span style="color:#f92672">=[</span>534774<span style="color:#f92672">]</span>
+</span></span></code></pre></div><p>Above shows clat on percentile basis. and show latency in usec (microseconds). As a performance engineer, we fairly understand what percentile is and how much useful it is in concluding the performance of any app.</p>
+<p><strong>Line 7: bw</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>bw <span style="color:#f92672">(</span>  KiB/s<span style="color:#f92672">)</span>: min<span style="color:#f92672">=</span>  128, max<span style="color:#f92672">=</span>16432, per<span style="color:#f92672">=</span>9.80%, avg<span style="color:#f92672">=</span>4073.95, stdev<span style="color:#f92672">=</span>4261.40, samples<span style="color:#f92672">=</span><span style="color:#ae81ff">86</span>
+</span></span></code></pre></div><p>&ldquo;bw&rdquo; - Bandwidth statistics based on samples. It also includes the number of samples taken (samples) and an approximate percentage of total aggregate bandwidth this thread received in its group (per). This last value is only really useful if the threads in this group are on the same disk, since they are then competing for disk access.</p>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p><strong>Line 8: iops</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>iops        : min<span style="color:#f92672">=</span>   32, max<span style="color:#f92672">=</span> 4108, avg<span style="color:#f92672">=</span>1018.34, stdev<span style="color:#f92672">=</span>1065.36, samples<span style="color:#f92672">=</span><span style="color:#ae81ff">86</span>
+</span></span></code></pre></div><p>iops: input output per sec. It is straightforward. But, remember, this value is also calculated on the number of samples, and will be lower than over all <strong>IOPS</strong>.</p>
+<p><strong>Line 9-11: lat-</strong> lat is latency as explained in the above section. below output shows distribution with percentage. e.g. 1.09% transactions got 250 usec latency.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>	lat <span style="color:#f92672">(</span>usec<span style="color:#f92672">)</span>   : 250<span style="color:#f92672">=</span>1.09%, 500<span style="color:#f92672">=</span>10.94%, 750<span style="color:#f92672">=</span>9.42%, 1000<span style="color:#f92672">=</span>8.29%
+</span></span><span style="display:flex;"><span>  lat <span style="color:#f92672">(</span>msec<span style="color:#f92672">)</span>   : 2<span style="color:#f92672">=</span>14.37%, 4<span style="color:#f92672">=</span>9.56%, 10<span style="color:#f92672">=</span>19.87%, 20<span style="color:#f92672">=</span>15.05%, 50<span style="color:#f92672">=</span>5.85%
+</span></span><span style="display:flex;"><span>  lat <span style="color:#f92672">(</span>msec<span style="color:#f92672">)</span>   : 100<span style="color:#f92672">=</span>1.37%, 250<span style="color:#f92672">=</span>3.87%, 500<span style="color:#f92672">=</span>0.30%, 750<span style="color:#f92672">=</span>0.03%
+</span></span></code></pre></div><p><strong>Line 12: cpu -</strong> user/system CPU percentages followed by context switches then major and minor page faults. Since this test is configured to use direct IO (—direct=1 in the command), there should be very few page faults.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cpu          : usr<span style="color:#f92672">=</span>0.40%, sys<span style="color:#f92672">=</span>4.20%, ctx<span style="color:#f92672">=</span>30632, majf<span style="color:#f92672">=</span>0, minf<span style="color:#f92672">=</span><span style="color:#ae81ff">105</span>
+</span></span></code></pre></div><p><strong>Line 13-17: IO depths-</strong> IO depth parameter basically instructs fio to submit n number of IO asynchronously and it does not have to wait for earlier I/O to be &ldquo;acknowledged&rdquo; before submitting new I/O until it reaches the IO depth limit. e.g. IO depth=16, fio will send 1 to 16 instruction and it does not have to wait for the response. But to send 17th, it must have received at least 1 response from the outstanding already sent instructions.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>IO depths    : 1<span style="color:#f92672">=</span>0.1%, 2<span style="color:#f92672">=</span>0.1%, 4<span style="color:#f92672">=</span>0.1%, 8<span style="color:#f92672">=</span>0.2%, 16<span style="color:#f92672">=</span>99.7%, 32<span style="color:#f92672">=</span>0.0%, &gt;<span style="color:#f92672">=</span>64<span style="color:#f92672">=</span>0.0%
+</span></span><span style="display:flex;"><span>     submit    : 0<span style="color:#f92672">=</span>0.0%, 4<span style="color:#f92672">=</span>100.0%, 8<span style="color:#f92672">=</span>0.0%, 16<span style="color:#f92672">=</span>0.0%, 32<span style="color:#f92672">=</span>0.0%, 64<span style="color:#f92672">=</span>0.0%, &gt;<span style="color:#f92672">=</span>64<span style="color:#f92672">=</span>0.0%
+</span></span><span style="display:flex;"><span>     complete  : 0<span style="color:#f92672">=</span>0.0%, 4<span style="color:#f92672">=</span>100.0%, 8<span style="color:#f92672">=</span>0.0%, 16<span style="color:#f92672">=</span>0.1%, 32<span style="color:#f92672">=</span>0.0%, 64<span style="color:#f92672">=</span>0.0%, &gt;<span style="color:#f92672">=</span>64<span style="color:#f92672">=</span>0.0%
+</span></span><span style="display:flex;"><span>     issued rwt: total<span style="color:#f92672">=</span>0,51200,0, short<span style="color:#f92672">=</span>0,0,0, dropped<span style="color:#f92672">=</span>0,0,0
+</span></span><span style="display:flex;"><span>     latency   : target<span style="color:#f92672">=</span>0, window<span style="color:#f92672">=</span>0, percentile<span style="color:#f92672">=</span>100.00%, depth<span style="color:#f92672">=</span><span style="color:#ae81ff">16</span>
+</span></span></code></pre></div><p><strong>submit:</strong> How many pieces of I/O were submitting in a single submit call. Each entry denotes that amount and below, until the previous entry – e.g., 16=100% means that we submitted anywhere between 9 to 16 I/Os per submit call.</p>
+<p><strong>complete:</strong> similar to submit.</p>
+<p><strong>issued rwt:</strong> The number of read/write/trim requests issued, and how many of them were short or dropped.</p>
+<p>There are many other IO depth parameters which can be used for emulating other scenario.</p>
+<p><strong>Line 19-20:</strong>  This line present the summary and final result. and it is quite self explanatory.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Run status group <span style="color:#ae81ff">0</span> <span style="color:#f92672">(</span>all jobs<span style="color:#f92672">)</span>:
+</span></span><span style="display:flex;"><span>  WRITE: bw<span style="color:#f92672">=</span>40.6MiB/s <span style="color:#f92672">(</span>42.6MB/s<span style="color:#f92672">)</span>, 40.6MiB/s-40.6MiB/s <span style="color:#f92672">(</span>42.6MB/s-42.6MB/s<span style="color:#f92672">)</span>, io<span style="color:#f92672">=</span>200MiB <span style="color:#f92672">(</span>210MB<span style="color:#f92672">)</span>, run<span style="color:#f92672">=</span>4926-4926msec
+</span></span></code></pre></div><p><strong>bw:</strong> overall bandwidth of the disk</p>
+<p><strong>io:</strong> total size of the IO</p>
+<p><strong>run:</strong> Total time taken in test execution</p>
+<p>At last fio also gives disk stats:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>Disk stats <span style="color:#f92672">(</span>read/write<span style="color:#f92672">)</span>:
+</span></span><span style="display:flex;"><span>  sdb: ios<span style="color:#f92672">=</span>0/46893, merge<span style="color:#f92672">=</span>0/1320, ticks<span style="color:#f92672">=</span>0/602152, in_queue<span style="color:#f92672">=</span>602644, util<span style="color:#f92672">=</span>92.72
+</span></span></code></pre></div><p><strong>ios:</strong> Number of I/Os performed by all groups.</p>
+<p><strong>merge:</strong> Number of merges performed by the I/O scheduler.</p>
+<p><strong>ticks:</strong> Number of ticks we kept the disk busy.</p>
+<p><strong>in_queue:</strong> Total time spent in the disk queue.</p>
+<p><strong>util:</strong> The disk utilization. A value of 100% means we kept the disk busy constantly, 50% would be a disk idling half of the time.</p>
+<p>From the above exercise and output, we can see the Disk is highly efficient in writing when IO Depth is 16 and parallel jobs are up to 10.</p>
+<p>However, the disk perf numbers which we have assumed for an application under test show queue length is 5 and Read (MB)/sec is 10, which is still not concludable if that is the issue.</p>
+<p>As the test we have executed was only for write and that does not tells about how the disk will perform. We may execute another test where we do both in parallel.</p>
+<p>On disk queue length, There could be reason, application writing threads could be ore what we have used (10). We may want to try another test.</p>
+<p>Next test could be like below and observe the output:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>fio --name<span style="color:#f92672">=</span>formyblog2 --bs<span style="color:#f92672">=</span>4K --numjobs<span style="color:#f92672">=</span><span style="color:#ae81ff">100</span> --size<span style="color:#f92672">=</span>20M --rw<span style="color:#f92672">=</span>readwrite --directory<span style="color:#f92672">=</span>/home/ubuntu/disk2/fio_test --ioengine<span style="color:#f92672">=</span>libaio --group_reporting --iodepth<span style="color:#f92672">=</span><span style="color:#ae81ff">256</span> --direct<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</span></span></code></pre></div><p>I leave the output for you to do analysis. We will be seeing two set of results separately for read and write because In this test, we have done both read and write operations. Hope this gives you a head start to understand the fio output.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>root@shubham-ubuntu:/home/ubuntu/disk2/fio_test# fio --name<span style="color:#f92672">=</span>formyblog2 --bs<span style="color:#f92672">=</span>4K --numjobs<span style="color:#f92672">=</span><span style="color:#ae81ff">100</span> --size<span style="color:#f92672">=</span>20M --rw<span style="color:#f92672">=</span>readwrite --directory<span style="color:#f92672">=</span>/home/ubuntu/disk2/fio_test --ioengine<span style="color:#f92672">=</span>libaio --group_reporting --iodepth<span style="color:#f92672">=</span><span style="color:#ae81ff">256</span> --direct<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>formyblog2: <span style="color:#f92672">(</span>g<span style="color:#f92672">=</span>0<span style="color:#f92672">)</span>: rw<span style="color:#f92672">=</span>rw, bs<span style="color:#f92672">=(</span>R<span style="color:#f92672">)</span> 4096B-4096B, <span style="color:#f92672">(</span>W<span style="color:#f92672">)</span> 4096B-4096B, <span style="color:#f92672">(</span>T<span style="color:#f92672">)</span> 4096B-4096B, ioengine<span style="color:#f92672">=</span>libaio, iodepth<span style="color:#f92672">=</span><span style="color:#ae81ff">256</span>
+</span></span><span style="display:flex;"><span>...
+</span></span><span style="display:flex;"><span>fio-3.1
+</span></span><span style="display:flex;"><span>Starting <span style="color:#ae81ff">100</span> processes
+</span></span><span style="display:flex;"><span>Jobs: <span style="color:#ae81ff">96</span> <span style="color:#f92672">(</span>f<span style="color:#f92672">=</span>96<span style="color:#f92672">)</span>: <span style="color:#f92672">[</span>M<span style="color:#f92672">(</span>3<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>45<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>21<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>4<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>23<span style="color:#f92672">)][</span>50.0%<span style="color:#f92672">][</span>r<span style="color:#f92672">=</span>60.5MiB/s,w<span style="color:#f92672">=</span>63.3MiB/s<span style="color:#f92672">][</span>r<span style="color:#f92672">=</span>15.5k,w<span style="color:#f92672">=</span>16.2k IOPS<span style="color:#f92672">][</span>eta 0Jobs: <span style="color:#ae81ff">94</span> <span style="color:#f92672">(</span>f<span style="color:#f92672">=</span>94<span style="color:#f92672">)</span>: <span style="color:#f92672">[</span>M<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>8<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>36<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>21<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>4<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>23<span style="color:#f92672">)][</span>53.8%<span style="color:#f92672">][</span>r<span style="color:#f92672">=</span>52.6MiB/s,w<span style="color:#f92672">=</span>50.7MiB/s<span style="color:#f92672">][</span>r<span style="color:#f92672">=</span>13.5kJobs: <span style="color:#ae81ff">75</span> <span style="color:#f92672">(</span>f<span style="color:#f92672">=</span>74<span style="color:#f92672">)</span>: <span style="color:#f92672">[</span>_<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>8<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>3<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>5<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,f<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>6<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>5<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>9<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>3<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>6<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>3<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>6<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>3<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>7<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>6<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>3<span style="color:#f92672">)][</span>65.2%<span style="color:#f92672">][</span>r<span style="color:#f92672">=</span>78.2MiB/s,w<span style="color:#f92672">=</span>78.4MiB/s<span style="color:#f92672">][</span>r<span style="color:#f92672">=</span>20.0k,w<span style="color:#f92672">=</span>20.1k IOPS<span style="color:#f92672">]</span>Jobs: <span style="color:#ae81ff">50</span> <span style="color:#f92672">(</span>f<span style="color:#f92672">=</span>49<span style="color:#f92672">)</span>: <span style="color:#f92672">[</span>_<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>4<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>5<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>4<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>4<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>6<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>3<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>,f<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>3<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>2<span style="color:#f92672">)</span>,M<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span>,_<span style="color:#f92672">(</span>2<span style="color:#f92672">)][</span>72.7%<span style="color:#f92672">][</span>r<span style="color:#f92672">=</span>76.7MiB/s,w<span style="color:#f92672">=</span>76.5MiB/s<span style="color:#f92672">][</span>r<span style="color:#f92672">=</span>19.6k,w<span style="color:#f92672">=</span>19.6k IOPS<span style="color:#f92672">][</span>eta 00m:06s<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>formyblog2: <span style="color:#f92672">(</span>groupid<span style="color:#f92672">=</span>0, jobs<span style="color:#f92672">=</span>100<span style="color:#f92672">)</span>: err<span style="color:#f92672">=</span> 0: pid<span style="color:#f92672">=</span>25987: Sat Jul <span style="color:#ae81ff">31</span> 17:01:39 <span style="color:#ae81ff">2021</span>
+</span></span><span style="display:flex;"><span>   read: IOPS<span style="color:#f92672">=</span>15.7k, BW<span style="color:#f92672">=</span>61.3MiB/s <span style="color:#f92672">(</span>64.3MB/s<span style="color:#f92672">)(</span>1002MiB/16337msec<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    slat <span style="color:#f92672">(</span>nsec<span style="color:#f92672">)</span>: min<span style="color:#f92672">=</span>1645, max<span style="color:#f92672">=</span>2385.3M, avg<span style="color:#f92672">=</span>1989971.80, stdev<span style="color:#f92672">=</span>37389582.53
+</span></span><span style="display:flex;"><span>    clat <span style="color:#f92672">(</span>usec<span style="color:#f92672">)</span>: min<span style="color:#f92672">=</span>228, max<span style="color:#f92672">=</span>3079.4k, avg<span style="color:#f92672">=</span>634650.80, stdev<span style="color:#f92672">=</span>445075.07
+</span></span><span style="display:flex;"><span>     lat <span style="color:#f92672">(</span>usec<span style="color:#f92672">)</span>: min<span style="color:#f92672">=</span>244, max<span style="color:#f92672">=</span>3852.3k, avg<span style="color:#f92672">=</span>636640.92, stdev<span style="color:#f92672">=</span>445806.72
+</span></span><span style="display:flex;"><span>    clat percentiles <span style="color:#f92672">(</span>msec<span style="color:#f92672">)</span>:
+</span></span><span style="display:flex;"><span>     |  1.00th<span style="color:#f92672">=[</span>    4<span style="color:#f92672">]</span>,  5.00th<span style="color:#f92672">=[</span>   21<span style="color:#f92672">]</span>, 10.00th<span style="color:#f92672">=[</span>   96<span style="color:#f92672">]</span>, 20.00th<span style="color:#f92672">=[</span>  257<span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>     | 30.00th<span style="color:#f92672">=[</span>  330<span style="color:#f92672">]</span>, 40.00th<span style="color:#f92672">=[</span>  451<span style="color:#f92672">]</span>, 50.00th<span style="color:#f92672">=[</span>  625<span style="color:#f92672">]</span>, 60.00th<span style="color:#f92672">=[</span>  726<span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>     | 70.00th<span style="color:#f92672">=[</span>  810<span style="color:#f92672">]</span>, 80.00th<span style="color:#f92672">=[</span>  919<span style="color:#f92672">]</span>, 90.00th<span style="color:#f92672">=[</span> 1183<span style="color:#f92672">]</span>, 95.00th<span style="color:#f92672">=[</span> 1418<span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>     | 99.00th<span style="color:#f92672">=[</span> 2165<span style="color:#f92672">]</span>, 99.50th<span style="color:#f92672">=[</span> 2433<span style="color:#f92672">]</span>, 99.90th<span style="color:#f92672">=[</span> 2735<span style="color:#f92672">]</span>, 99.95th<span style="color:#f92672">=[</span> 2937<span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>     | 99.99th<span style="color:#f92672">=[</span> 3071<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>   bw <span style="color:#f92672">(</span>  KiB/s<span style="color:#f92672">)</span>: min<span style="color:#f92672">=</span>    6, max<span style="color:#f92672">=</span> 6576, per<span style="color:#f92672">=</span>1.69%, avg<span style="color:#f92672">=</span>1058.57, stdev<span style="color:#f92672">=</span>706.28, samples<span style="color:#f92672">=</span><span style="color:#ae81ff">1771</span>
+</span></span><span style="display:flex;"><span>   iops        : min<span style="color:#f92672">=</span>    1, max<span style="color:#f92672">=</span> 1644, avg<span style="color:#f92672">=</span>264.36, stdev<span style="color:#f92672">=</span>176.54, samples<span style="color:#f92672">=</span><span style="color:#ae81ff">1771</span>
+</span></span><span style="display:flex;"><span>  write: IOPS<span style="color:#f92672">=</span>15.6k, BW<span style="color:#f92672">=</span>61.1MiB/s <span style="color:#f92672">(</span>64.1MB/s<span style="color:#f92672">)(</span>998MiB/16337msec<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>    slat <span style="color:#f92672">(</span>usec<span style="color:#f92672">)</span>: min<span style="color:#f92672">=</span>2, max<span style="color:#f92672">=</span>2385.3k, avg<span style="color:#f92672">=</span>1894.46, stdev<span style="color:#f92672">=</span>35896.03
+</span></span><span style="display:flex;"><span>    clat <span style="color:#f92672">(</span>usec<span style="color:#f92672">)</span>: min<span style="color:#f92672">=</span>545, max<span style="color:#f92672">=</span>3079.2k, avg<span style="color:#f92672">=</span>645759.96, stdev<span style="color:#f92672">=</span>445159.18
+</span></span><span style="display:flex;"><span>     lat <span style="color:#f92672">(</span>usec<span style="color:#f92672">)</span>: min<span style="color:#f92672">=</span>548, max<span style="color:#f92672">=</span>3583.5k, avg<span style="color:#f92672">=</span>647654.57, stdev<span style="color:#f92672">=</span>445869.08
+</span></span><span style="display:flex;"><span>    clat percentiles <span style="color:#f92672">(</span>msec<span style="color:#f92672">)</span>:
+</span></span><span style="display:flex;"><span>     |  1.00th<span style="color:#f92672">=[</span>    7<span style="color:#f92672">]</span>,  5.00th<span style="color:#f92672">=[</span>   30<span style="color:#f92672">]</span>, 10.00th<span style="color:#f92672">=[</span>  116<span style="color:#f92672">]</span>, 20.00th<span style="color:#f92672">=[</span>  271<span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>     | 30.00th<span style="color:#f92672">=[</span>  347<span style="color:#f92672">]</span>, 40.00th<span style="color:#f92672">=[</span>  472<span style="color:#f92672">]</span>, 50.00th<span style="color:#f92672">=[</span>  634<span style="color:#f92672">]</span>, 60.00th<span style="color:#f92672">=[</span>  726<span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>     | 70.00th<span style="color:#f92672">=[</span>  818<span style="color:#f92672">]</span>, 80.00th<span style="color:#f92672">=[</span>  927<span style="color:#f92672">]</span>, 90.00th<span style="color:#f92672">=[</span> 1200<span style="color:#f92672">]</span>, 95.00th<span style="color:#f92672">=[</span> 1435<span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>     | 99.00th<span style="color:#f92672">=[</span> 2232<span style="color:#f92672">]</span>, 99.50th<span style="color:#f92672">=[</span> 2433<span style="color:#f92672">]</span>, 99.90th<span style="color:#f92672">=[</span> 2802<span style="color:#f92672">]</span>, 99.95th<span style="color:#f92672">=[</span> 2937<span style="color:#f92672">]</span>,
+</span></span><span style="display:flex;"><span>     | 99.99th<span style="color:#f92672">=[</span> 3071<span style="color:#f92672">]</span>
+</span></span><span style="display:flex;"><span>   bw <span style="color:#f92672">(</span>  KiB/s<span style="color:#f92672">)</span>: min<span style="color:#f92672">=</span>    5, max<span style="color:#f92672">=</span> 6832, per<span style="color:#f92672">=</span>1.71%, avg<span style="color:#f92672">=</span>1070.46, stdev<span style="color:#f92672">=</span>691.91, samples<span style="color:#f92672">=</span><span style="color:#ae81ff">1742</span>
+</span></span><span style="display:flex;"><span>   iops        : min<span style="color:#f92672">=</span>    1, max<span style="color:#f92672">=</span> 1708, avg<span style="color:#f92672">=</span>267.33, stdev<span style="color:#f92672">=</span>172.94, samples<span style="color:#f92672">=</span><span style="color:#ae81ff">1742</span>
+</span></span><span style="display:flex;"><span>  lat <span style="color:#f92672">(</span>usec<span style="color:#f92672">)</span>   : 250<span style="color:#f92672">=</span>0.01%, 500<span style="color:#f92672">=</span>0.01%, 750<span style="color:#f92672">=</span>0.03%, 1000<span style="color:#f92672">=</span>0.04%
+</span></span><span style="display:flex;"><span>  lat <span style="color:#f92672">(</span>msec<span style="color:#f92672">)</span>   : 2<span style="color:#f92672">=</span>0.30%, 4<span style="color:#f92672">=</span>0.57%, 10<span style="color:#f92672">=</span>0.93%, 20<span style="color:#f92672">=</span>2.59%, 50<span style="color:#f92672">=</span>2.32%
+</span></span><span style="display:flex;"><span>  lat <span style="color:#f92672">(</span>msec<span style="color:#f92672">)</span>   : 100<span style="color:#f92672">=</span>2.95%, 250<span style="color:#f92672">=</span>8.63%, 500<span style="color:#f92672">=</span>23.35%, 750<span style="color:#f92672">=</span>20.92%, 1000<span style="color:#f92672">=</span>20.04%
+</span></span><span style="display:flex;"><span>  lat <span style="color:#f92672">(</span>msec<span style="color:#f92672">)</span>   : 2000<span style="color:#f92672">=</span>15.88%, &gt;<span style="color:#f92672">=</span>2000<span style="color:#f92672">=</span>1.46%
+</span></span><span style="display:flex;"><span>  cpu          : usr<span style="color:#f92672">=</span>0.16%, sys<span style="color:#f92672">=</span>0.79%, ctx<span style="color:#f92672">=</span>5223, majf<span style="color:#f92672">=</span>0, minf<span style="color:#f92672">=</span><span style="color:#ae81ff">1297</span>
+</span></span><span style="display:flex;"><span>  IO depths    : 1<span style="color:#f92672">=</span>0.1%, 2<span style="color:#f92672">=</span>0.1%, 4<span style="color:#f92672">=</span>0.1%, 8<span style="color:#f92672">=</span>0.2%, 16<span style="color:#f92672">=</span>0.3%, 32<span style="color:#f92672">=</span>0.6%, &gt;<span style="color:#f92672">=</span>64<span style="color:#f92672">=</span>98.8%
+</span></span><span style="display:flex;"><span>     submit    : 0<span style="color:#f92672">=</span>0.0%, 4<span style="color:#f92672">=</span>100.0%, 8<span style="color:#f92672">=</span>0.0%, 16<span style="color:#f92672">=</span>0.0%, 32<span style="color:#f92672">=</span>0.0%, 64<span style="color:#f92672">=</span>0.0%, &gt;<span style="color:#f92672">=</span>64<span style="color:#f92672">=</span>0.0%
+</span></span><span style="display:flex;"><span>     complete  : 0<span style="color:#f92672">=</span>0.0%, 4<span style="color:#f92672">=</span>100.0%, 8<span style="color:#f92672">=</span>0.0%, 16<span style="color:#f92672">=</span>0.0%, 32<span style="color:#f92672">=</span>0.0%, 64<span style="color:#f92672">=</span>0.0%, &gt;<span style="color:#f92672">=</span>64<span style="color:#f92672">=</span>0.1%
+</span></span><span style="display:flex;"><span>     issued rwt: total<span style="color:#f92672">=</span>256423,255577,0, short<span style="color:#f92672">=</span>0,0,0, dropped<span style="color:#f92672">=</span>0,0,0
+</span></span><span style="display:flex;"><span>     latency   : target<span style="color:#f92672">=</span>0, window<span style="color:#f92672">=</span>0, percentile<span style="color:#f92672">=</span>100.00%, depth<span style="color:#f92672">=</span><span style="color:#ae81ff">256</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Run status group <span style="color:#ae81ff">0</span> <span style="color:#f92672">(</span>all jobs<span style="color:#f92672">)</span>:
+</span></span><span style="display:flex;"><span>   READ: bw<span style="color:#f92672">=</span>61.3MiB/s <span style="color:#f92672">(</span>64.3MB/s<span style="color:#f92672">)</span>, 61.3MiB/s-61.3MiB/s <span style="color:#f92672">(</span>64.3MB/s-64.3MB/s<span style="color:#f92672">)</span>, io<span style="color:#f92672">=</span>1002MiB <span style="color:#f92672">(</span>1050MB<span style="color:#f92672">)</span>, run<span style="color:#f92672">=</span>16337-16337msec
+</span></span><span style="display:flex;"><span>  WRITE: bw<span style="color:#f92672">=</span>61.1MiB/s <span style="color:#f92672">(</span>64.1MB/s<span style="color:#f92672">)</span>, 61.1MiB/s-61.1MiB/s <span style="color:#f92672">(</span>64.1MB/s-64.1MB/s<span style="color:#f92672">)</span>, io<span style="color:#f92672">=</span>998MiB <span style="color:#f92672">(</span>1047MB<span style="color:#f92672">)</span>, run<span style="color:#f92672">=</span>16337-16337msec
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>Disk stats <span style="color:#f92672">(</span>read/write<span style="color:#f92672">)</span>:
+</span></span><span style="display:flex;"><span>  sdb: ios<span style="color:#f92672">=</span>4684/4639, merge<span style="color:#f92672">=</span>251098/250336, ticks<span style="color:#f92672">=</span>1023060/1039920, in_queue<span style="color:#f92672">=</span>2071768, util<span style="color:#f92672">=</span>98.94%
+</span></span></code></pre></div><p><strong>References:</strong></p>
+<p><a href="https://fio.readthedocs.io/en/latest/fio_doc.html#">https://fio.readthedocs.io/en/latest/index.html</a>
+<a href="https://unix.stackexchange.com/questions/459045/what-exactly-is-iodepth-in-fio">https://unix.stackexchange.com/questions/459045/what-exactly-is-iodepth-in-fio</a>
+<a href="https://docs.virtuozzo.com/virtuozzo_hybrid_infrastructure_4_0_benchmarking_guide/appendix/randwrite.html">https://docs.virtuozzo.com/virtuozzo_hybrid_infrastructure_4_0_benchmarking_guide/appendix/randwrite.html</a></p>
+              
+
+
+            </div>
+          </div>
+
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">TAGGED IN</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="http://localhost:1313/tags/linux/">Linux</a>
+
+  <a class="tag tag--primary tag--small" href="http://localhost:1313/tags/fio/">fio</a>
+
+                  </div>
+                
+              
+            
+            
+<div class="post-actions-wrap">
+  <nav >
+    <ul class="post-actions post-action-nav">
+      
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="http://localhost:1313/posts/who-is-faster/" data-tooltip="Who is faster - Asyncio / MultiThreading / MultiProcessing / Sync in Python" aria-label="NEXT: Who is faster - Asyncio / MultiThreading / MultiProcessing / Sync in Python">
+          
+              <i class="fa fa-angle-left"></i>
+              <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+            </a>
+        </li>
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--disabled">
+          
+              <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+              <i class="fa fa-angle-right"></i>
+            </a>
+        </li>
+      
+    </ul>
+  </nav>
+<ul class="post-actions post-action-share" >
+  
+    <li class="post-action hide-lg hide-md hide-sm">
+      <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+        <i class="fa fa-share-alt" aria-hidden="true"></i>
+      </a>
+    </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:1313/posts/fio/" title="Share on Facebook" aria-label="Share on Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://localhost:1313/posts/fio/" title="Share on Twitter" aria-label="Share on Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=http://localhost:1313/posts/fio/" title="Share on Linkedin" aria-label="Share on Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+  
+  
+  <li class="post-action">
+    
+      <a class="post-action-btn btn btn--default" href="#top" aria-label="Back to top">
+      <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    
+    </a>
+  </li>
+</ul>
+</div>
+
+
+            
+  
+
+
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2025 Pallavi &amp; Shubham. All Rights Reserved
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+        
+<div class="post-actions-wrap">
+  <nav >
+    <ul class="post-actions post-action-nav">
+      
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="http://localhost:1313/posts/who-is-faster/" data-tooltip="Who is faster - Asyncio / MultiThreading / MultiProcessing / Sync in Python" aria-label="NEXT: Who is faster - Asyncio / MultiThreading / MultiProcessing / Sync in Python">
+          
+              <i class="fa fa-angle-left"></i>
+              <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+            </a>
+        </li>
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--disabled">
+          
+              <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+              <i class="fa fa-angle-right"></i>
+            </a>
+        </li>
+      
+    </ul>
+  </nav>
+<ul class="post-actions post-action-share" >
+  
+    <li class="post-action hide-lg hide-md hide-sm">
+      <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+        <i class="fa fa-share-alt" aria-hidden="true"></i>
+      </a>
+    </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:1313/posts/fio/" title="Share on Facebook" aria-label="Share on Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://localhost:1313/posts/fio/" title="Share on Twitter" aria-label="Share on Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=http://localhost:1313/posts/fio/" title="Share on Linkedin" aria-label="Share on Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+  
+  
+  <li class="post-action">
+    
+      <a class="post-action-btn btn btn--default" href="#top" aria-label="Back to top">
+      <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    
+    </a>
+  </li>
+</ul>
+</div>
+
+
+      </div>
+      
+<div id="share-options-bar" class="share-options-bar" data-behavior="4">
+  <i id="btn-close-shareoptions" class="fa fa-times"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A1313%2Fposts%2Ffio%2F" aria-label="Share on Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i><span>Share on Facebook</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http%3A%2F%2Flocalhost%3A1313%2Fposts%2Ffio%2F" aria-label="Share on Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=http%3A%2F%2Flocalhost%3A1313%2Fposts%2Ffio%2F" aria-label="Share on Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i><span>Share on Linkedin</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+
+
+    </div>
+
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-times"></i>
+    </div>
+
+
+
+
+    <img id="about-card-picture" src="https://myperflab.co.in/images/dp_new.png" alt="author xxx" />
+
+
+    
+    <h4 id="about-card-name">Pallavi &amp; Shubham</h4>
+    
+      <div id="about-card-bio">Super cool Performance Engineer duo in love with each other</div>
+    
+
+
+
+
+
+
+
+    <div id="about-card-link_p"><p>Connect with them on linkedin </p><a href=https://www.linkedin.com/in/pallavi-shinde-35704764/>Pallavi Shinde</a><p> </p> <a href=https://www.linkedin.com/in/shubham-sachan-74012058/>Shubham Sachan</a>
+    </div>
+
+
+
+
+
+
+
+  </div>
+</div>
+
+    
+
+    
+  
+    
+      <div id="cover" style="background-image:url('http://localhost:1313/images/cover.jpg');"></div>
+    
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/highlight.min.js" integrity="sha512-z+/WWfyD5tccCukM4VvONpEtLmbAm5LDu7eKiyMQJ9m7OfPEDL7gENyDRL3Yfe8XAuGsS2fS4xSMnl6d30kqGQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha512-uURl+ZXMBrF4AwGaWmEetzrd+J5/8NRkWAvJx5sbPSSuOb0bZLqf+tOzniObO00BjHa/dD7gub9oCGMLPQHtQA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+<script src="http://localhost:1313/js/js_script_for_theme.min.js"></script>
+
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-gE8KAQyFIzV1C9+GZ8TKJHZS2s+n7EjNtC+IMRn1l5+WYJTHOODUM6JSjZhFhqXmc7bG8Av6XXpckA4tYhflnw==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/apache.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-EWROca+bote+7Oaaar1F6y74iZj1r1F9rm/ly7o+/FwJopbBaWtsFDmaKoZDd3QiGU2pGacBirHJNivmGLYrow==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/go.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-GDVzAn0wpx1yVtQsRWmFc6PhJiLBPdUic+h4GWgljBh904O3JU10fk9EKNpVyIoPqkFn54rgL2QBG4BmUTMpiQ==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/http.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-UgZlma8NzkrDb/NWgmLIcTrH7i/CSnLLDRFqCSNF5NGPpjKmzyM25qcoXGOup8+cDakKyaiTDd7N4dyH4YT+IA==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/less.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-lot9koe73sfXIrUvIPM/UEhuMciN56RPyBdOyZgfO53P2lkWyyXN7J+njcxIIBRV+nVDQeiWtiXg+bLAJZDTfg==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/nginx.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-Zd3e7XxHP00TD0Imr0PIfeM0fl0v95kMWuhyAS3Wn1UTSXTkz0OhtRgBAr4JlmADRgiXr4x7lpeUdqaGN8xIog==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/puppet.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-qtqDO052iXMSP+5d/aE/jMtL9vIIGvONgTJziC2K/ZIB1yEGa55WVxGE9/08rSQ62EoDifS9SWVGZ7ihSLhzMA==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/scss.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-1NmkjnEDnwwwcu28KoQF8vs3oaPFokQHbmbtwGhFfeDsQZtVFI8zW2aE9O8yMYdpdyKV/5blE4pSWw4Z/Sv97w==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/stylus.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-B2wSfruPjr8EJL6IIzQr1eAuDwrsfIfccNf/LCEdxELCgC/S/ZMt/Uvk80aD79m7IqOqW+Sw8nbkvha20yZpzg==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/swift.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-28oDiQZGKUVN6wQ7PSLPNipOcmkCALXKwOi7bnkyFf8QiMZQxG9EQoy/iiNx6Zxj2cG2SbVa4dXKigQhu7GiFw==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/yaml.min.js"></script>
+  
+
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+
+
+    
+  </body>
+</html>
+

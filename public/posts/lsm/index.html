@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+    <script type="application/ld+json">
+
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "LSM Tree Explained",
+  
+  "image": "http://localhost:1313/images/lsm.jpeg",
+  
+  "datePublished": "2024-10-24T00:00:00Z",
+  "dateModified": "2024-10-24T00:00:00Z",
+  "author": {
+    "@type": "Person",
+    "name": "Pallavi \u0026 Shubham",
+    
+    "image": "http://localhost:1313/images/dp_new.png"
+    
+  },
+  "mainEntityOfPage": { 
+    "@type": "WebPage",
+    "@id": "http:\/\/localhost:1313\/posts\/lsm\/" 
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "myPerfLab",
+    
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/images/dp_new.png"
+    }
+    
+  },
+  "description": "LSM Tree \u0026ndash; Log-Structured Merge Tree\nAn LSM Tree is a data structure commonly used in databases to efficiently handle high-volume write operations. It’s particularly popular in systems where data is mostly written in large quantities (e.g., time-series databases, key-value stores, and log management systems). LSM Tree works by organizing data in layers and leveraging a combination of in-memory and on-disk data structures to ensure highly writes efficient without dropping read speed.",
+  "keywords": []
+}
+
+</script>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.123.7 with theme Tranquilpeak 0.5.3-BETA">
+<meta name="author" content="Pallavi &amp; Shubham">
+<meta name="keywords" content="">
+<meta name="description" content="LSM Tree &ndash; Log-Structured Merge Tree
+An LSM Tree is a data structure commonly used in databases to efficiently handle high-volume write operations. It’s particularly popular in systems where data is mostly written in large quantities (e.g., time-series databases, key-value stores, and log management systems). LSM Tree works by organizing data in layers and leveraging a combination of in-memory and on-disk data structures to ensure highly writes efficient without dropping read speed.">
+
+
+<meta property="og:description" content="LSM Tree &ndash; Log-Structured Merge Tree
+An LSM Tree is a data structure commonly used in databases to efficiently handle high-volume write operations. It’s particularly popular in systems where data is mostly written in large quantities (e.g., time-series databases, key-value stores, and log management systems). LSM Tree works by organizing data in layers and leveraging a combination of in-memory and on-disk data structures to ensure highly writes efficient without dropping read speed.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LSM Tree Explained">
+<meta name="twitter:title" content="LSM Tree Explained">
+<meta property="og:url" content="http://localhost:1313/posts/lsm/">
+<meta property="twitter:url" content="http://localhost:1313/posts/lsm/">
+<meta property="og:site_name" content="myPerfLab">
+<meta property="og:description" content="LSM Tree &ndash; Log-Structured Merge Tree
+An LSM Tree is a data structure commonly used in databases to efficiently handle high-volume write operations. It’s particularly popular in systems where data is mostly written in large quantities (e.g., time-series databases, key-value stores, and log management systems). LSM Tree works by organizing data in layers and leveraging a combination of in-memory and on-disk data structures to ensure highly writes efficient without dropping read speed.">
+<meta name="twitter:description" content="LSM Tree &ndash; Log-Structured Merge Tree
+An LSM Tree is a data structure commonly used in databases to efficiently handle high-volume write operations. It’s particularly popular in systems where data is mostly written in large quantities (e.g., time-series databases, key-value stores, and log management systems). LSM Tree works by organizing data in layers and leveraging a combination of in-memory and on-disk data structures to ensure highly writes efficient without dropping read speed.">
+<meta property="og:locale" content="en-us">
+
+  
+    <meta property="article:published_time" content="2024-10-24T00:00:00">
+  
+  
+    <meta property="article:modified_time" content="2024-10-24T00:00:00">
+  
+  
+  
+    
+      <meta property="article:section" content="DS Algorithms">
+    
+  
+  
+    
+      <meta property="article:tag" content="Data Structure">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+
+
+  <meta property="og:image" content="https://www.gravatar.com/avatar/257da47f45d642c781b5d18b71badaa6?s=640">
+  <meta property="twitter:image" content="https://www.gravatar.com/avatar/257da47f45d642c781b5d18b71badaa6?s=640">
+
+
+
+
+
+  <meta property="og:image" content="http://localhost:1313/images/lsm.jpeg">
+  <meta property="twitter:image" content="http://localhost:1313/images/lsm.jpeg">
+
+
+    <title>LSM Tree Explained</title>
+
+    <link rel="icon" href="http://localhost:1313/favicon.png">
+    
+
+    
+
+    <link rel="canonical" href="http://localhost:1313/posts/lsm/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha512-H9jrZiiopUdsLpg94A333EfumgUBpO9MdbxStdeITo+KEIMaNfHNvwyjjDJb+ERPaRS6DpyRlKbvPUasNItRyw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    
+    
+    <link rel="stylesheet" href="http://localhost:1313/css/style-h6ccsoet3mzkbb0wngshlfbaweimexgqcxj0h5hu4h82olsdzz6wmqdkajm.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+
+
+
+  <body>
+
+    <div id="blog">
+      <header id="header" data-behavior="4">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+
+    <a class="header-title-link" href="http://localhost:1313/" aria-label=>myPerfLab</a>
+    
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="http://localhost:1313/#about" aria-label="Open the link: /#about">
+    
+    
+    
+      
+        <img class="header-picture" src="https://myperflab.co.in/images/dp_new.png" alt="Author&#39;s picture" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="4">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="http://localhost:1313/#about" aria-label="Read more about the author">
+          <img class="sidebar-profile-picture" src=https://myperflab.co.in/images/dp_new.png alt="Author&#39;s picture" />
+        </a>
+        <h4 class="sidebar-profile-name">Pallavi &amp; Shubham</h4>
+        
+          <h5 class="sidebar-profile-bio">Super cool Performance Engineer duo in love with each other</h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="http://localhost:1313/" title="Home">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-home" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">Home</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="http://localhost:1313/categories" title="Categories">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-bookmark" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">Categories</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="http://localhost:1313/tags" title="Tags">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-tags" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">Tags</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="http://localhost:1313/archives" title="Archives">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-archive" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">Archives</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="http://localhost:1313/#about" title="About">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-question" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">About</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/myperflab" target="_blank" rel="noopener" title="GitHub">
+    
+      <i class="sidebar-button-icon fab fa-lg fa-github" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="4"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" id="top">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title">
+      LSM Tree Explained
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time datetime="2024-10-24T00:00:00Z">
+        
+  October 24, 2024
+
+      </time>
+    
+    
+  
+  
+    <span>in</span>
+    
+      <a class="category-link" href="http://localhost:1313/categories/ds-algorithms">DS Algorithms</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown">
+            <div class="main-content-wrap">
+              <p>LSM Tree &ndash; <strong>Log-Structured Merge Tree</strong></p>
+<p>An LSM Tree is a data structure commonly used in databases to efficiently handle high-volume write operations. It’s particularly popular in systems where data is mostly written in large quantities (e.g., time-series databases, key-value stores, and log management systems). LSM Tree works by organizing data in layers and leveraging a combination of in-memory and on-disk data structures to ensure highly writes efficient without dropping read speed. However, read speed will be not as efficiet as in rdbms (e.g. postgress DB) as those are read optimized. In lsm tree implementation, read speed depends on the multiple parameters which will be discussed in the next sections.</p>
+<p><strong>Why LSM Tree is write efficient?</strong></p>
+<p>It writes into memory rather than disk (storage) which makes it superfast. Lets explore how it works and its terminology and architecture.</p>
+<p><strong>High-Level LSM Tree Architecture</strong></p>
+<p><img src="http://localhost:1313/images/lsm_tree.png" alt=""></p>
+<p>In LSM Tree, there two types of operations which are important.</p>
+<ol>
+<li><strong>User Operations in LSM Tree (User facing)</strong></li>
+</ol>
+<p><img src="http://localhost:1313/images/lsmtree_flow.png" alt=""></p>
+<ol start="2">
+<li><strong>Backend Operations (System-Managed)</strong></li>
+</ol>
+<p><img src="http://localhost:1313/images/lsmtree_flow_system_managed_ops.png" alt=""></p>
+<p>Lets go deeper inunderstanding the above operations along with understanding how LSM Tree works:</p>
+<p><strong>Write (insert)/Update Operation:</strong></p>
+<p><img src="http://localhost:1313/images/lsm_write.png" alt=""></p>
+<ol>
+<li>When a user initiates a Create operation, Data gets inserted a new record or key-value pair into the database. In an LSM (Log-Structured Merge) Tree, data is initially stored an in-memory structure called the Memtable (a write-friendly structure, often implemented as a sorted tree or hash table), so this write is not directly made to disk which makes it write efficient.</li>
+<li>Data in the Memtable is kept sorted, facilitating fast searches and inserts without needing immediate access to disk storage.</li>
+<li>For durability, each insertion operation is also written to the Write-Ahead Log (WAL).</li>
+<li>The WAL is a sequential log file where each write is recorded before it’s added to the Memtable, ensuring data isn’t lost if there’s a system crash before it’s persisted to disk.</li>
+<li>The WAL is typically stored on disk and append-only, making it fast for sequential writes.</li>
+<li>Over time, as more data is inserted, the Memtable fills up. And when it reaches a predefined threshold (based on memory limits), a Flush Operation is triggered, which moves the contents of the Memtable to disk.</li>
+<li>The flush process writes data to a Sorted String Table (<strong>SSTable</strong>) on disk, which is an immutable, sorted file format optimized for LSM Trees. SSTable consists of two components - Index &amp; Data Block. The Index block contains the primary keys and offsets, which point to the key-value offset in the Data block where the data is stored.</li>
+<li>SSTables are write-once and append-only, meaning that each SSTable is created once and not modified after being written. In case of an update to an existing key, a duplicate entry is recorded in the latest sstable and during compaction step old entry gets deleted. So at some point of time duplicate entries are possible to exist. And if read happens for the same key, it always gets the latest data even if more duplicates are present becasue read always happens from the latest sstable to oldatest table.</li>
+<li>SSTables store the flushed Memtable data in a sorted manner, enabling efficient retrieval and minimizing the need for random disk access during reads.</li>
+<li>Over time, multiple SSTables accumulate on disk, which can cause inefficiency and redundancy.</li>
+<li>A Compaction process periodically merges these SSTables, removing duplicates and consolidating data to reduce disk space usage.</li>
+<li>This process ensures that reads are more efficient by minimizing the number of SSTables that need to be accessed to retrieve data.</li>
+<li>To speed up reads, each SSTable includes a Bloom Filter and Index structures.</li>
+<li>Bloom Filters provide a probabilistic way to test if a key exists in an SSTable without scanning the entire file.</li>
+<li>An index helps locate specific keys within the SSTable quickly, so reads don’t have to search the entire structure. All the sstable are indexed for the efficient read operation.</li>
+</ol>
+<p><strong>Read Operation:</strong></p>
+<p><img src="http://localhost:1313/images/lsm_read.png" alt="">
+The read operation in an LSM Tree starts when a user requests to retrieve a specific key or data. Since data is spread across both memory (in the Memtable) and disk (in multiple SSTables), the system (DB) must check multiple locations to retrieve the latest value for a key. <strong>The search process begins in the Memtable</strong>, as it contains the most recent data, including updates not yet flushed to disk. If the key is found here, the value is returned immediately. However, if the key is not found in the Memtable, <strong>the system then checks the SSTables on disk</strong>. To speed up this process, each SSTable is accompanied by Bloom Filters and indexes. Bloom Filters, probabilistic data structures, help quickly rule out SSTables that do not contain the key, reducing unnecessary file accesses. If a Bloom Filter indicates the possible presence of a key, the system uses the SSTable’s internal index to locate the exact position of the key in the file.</p>
+<p>In cases where there are multiple versions of a key (due to delayed compaction), the system relies on timestamps to ensure it returns the most recent version. Thus, even with multiple sources of data, the LSM Tree can effectively manage read requests, maintaining efficient access by balancing in-memory structures, on-disk files, and background maintenance tasks like compaction and indexing. This architecture allows LSM Trees to handle high write throughput while keeping reads optimized and manageable across both memory and disk.</p>
+<p><strong>Notes:</strong> Bloom Filters and Index are associated with the SSTable. So to get the required data, DB iterates through SSTables, Bloom Filters, and Index until data is retrieved or all SSTables are exhausted.</p>
+<p><strong>Compaction and merge:</strong></p>
+<p>compaction and merge processes are used to manage and optimize data storage by consolidating data from smaller, faster components (or levels) to larger, slower ones. Although these steps are costly process need to handle it efficiently. But these steps are much needed to get the following:</p>
+<ol>
+<li>Optimize read efficiency: By keeping the number of files that need to be read during a query low</li>
+<li>Reclaim Storage: By deleting the obsolete or duplicate data to reduce storage usage.</li>
+<li>Maintains Write Efficiency: By deferring and batching writes through these processes, LSM-Trees reduce write amplification compared to constant updates in place.</li>
+</ol>
+<p>Lets understand how it works:</p>
+<p><strong>Merge</strong></p>
+<ol>
+<li>In an LSM-Tree, data is organized in multiple levels (e.g., Level 0, Level 1, etc.), with each level potentially having larger storage limits than the one before.</li>
+<li>Data is initially written to the memtable. When the memtable reaches capacity, it is flushed to disk as a sorted file at Level 0.</li>
+<li>Data flows from lower to higher levels. Files in Level 0 may be merged into Level 1 when they reach a threshold. In a merge process, files from one level are merged with the files in the next level, and duplicates or old entries are compacted.</li>
+</ol>
+<p><strong>Compaction</strong></p>
+<ol>
+<li>Compaction can be triggered based on various thresholds, such as the number of files or the total file size at a particular level. These triggers can be either automated based on various thrsold and system usage patterns or can be manul or can be combination of both</li>
+<li>A set of files is selected for compaction, often from one or multiple levels (e.g., all files in Level 0).</li>
+<li>The selected files are scanned, and their data is merged into a new, larger file. Any duplicate keys are resolved, keeping only the latest version.</li>
+<li>The newly merged file is written to the next level in the LSM-Tree. Old files are deleted once compaction is successful.</li>
+</ol>
+              
+
+
+            </div>
+          </div>
+
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">TAGGED IN</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="http://localhost:1313/tags/data-structure/">Data Structure</a>
+
+                  </div>
+                
+              
+            
+            
+<div class="post-actions-wrap">
+  <nav >
+    <ul class="post-actions post-action-nav">
+      
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="http://localhost:1313/posts/go_lang_profiling/" data-tooltip="Go Code Profiling Guide with Examples" aria-label="NEXT: Go Code Profiling Guide with Examples">
+          
+              <i class="fa fa-angle-left"></i>
+              <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+            </a>
+        </li>
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="http://localhost:1313/posts/entropy_ransome/" data-tooltip="How file entropy can help in identifying ransomware attack" aria-label="PREVIOUS: How file entropy can help in identifying ransomware attack">
+          
+              <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+              <i class="fa fa-angle-right"></i>
+            </a>
+        </li>
+      
+    </ul>
+  </nav>
+<ul class="post-actions post-action-share" >
+  
+    <li class="post-action hide-lg hide-md hide-sm">
+      <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+        <i class="fa fa-share-alt" aria-hidden="true"></i>
+      </a>
+    </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:1313/posts/lsm/" title="Share on Facebook" aria-label="Share on Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://localhost:1313/posts/lsm/" title="Share on Twitter" aria-label="Share on Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=http://localhost:1313/posts/lsm/" title="Share on Linkedin" aria-label="Share on Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+  
+  
+  <li class="post-action">
+    
+      <a class="post-action-btn btn btn--default" href="#top" aria-label="Back to top">
+      <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    
+    </a>
+  </li>
+</ul>
+</div>
+
+
+            
+  
+
+
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2025 Pallavi &amp; Shubham. All Rights Reserved
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+        
+<div class="post-actions-wrap">
+  <nav >
+    <ul class="post-actions post-action-nav">
+      
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="http://localhost:1313/posts/go_lang_profiling/" data-tooltip="Go Code Profiling Guide with Examples" aria-label="NEXT: Go Code Profiling Guide with Examples">
+          
+              <i class="fa fa-angle-left"></i>
+              <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+            </a>
+        </li>
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="http://localhost:1313/posts/entropy_ransome/" data-tooltip="How file entropy can help in identifying ransomware attack" aria-label="PREVIOUS: How file entropy can help in identifying ransomware attack">
+          
+              <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+              <i class="fa fa-angle-right"></i>
+            </a>
+        </li>
+      
+    </ul>
+  </nav>
+<ul class="post-actions post-action-share" >
+  
+    <li class="post-action hide-lg hide-md hide-sm">
+      <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+        <i class="fa fa-share-alt" aria-hidden="true"></i>
+      </a>
+    </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:1313/posts/lsm/" title="Share on Facebook" aria-label="Share on Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://localhost:1313/posts/lsm/" title="Share on Twitter" aria-label="Share on Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=http://localhost:1313/posts/lsm/" title="Share on Linkedin" aria-label="Share on Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+  
+  
+  <li class="post-action">
+    
+      <a class="post-action-btn btn btn--default" href="#top" aria-label="Back to top">
+      <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    
+    </a>
+  </li>
+</ul>
+</div>
+
+
+      </div>
+      
+<div id="share-options-bar" class="share-options-bar" data-behavior="4">
+  <i id="btn-close-shareoptions" class="fa fa-times"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A1313%2Fposts%2Flsm%2F" aria-label="Share on Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i><span>Share on Facebook</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http%3A%2F%2Flocalhost%3A1313%2Fposts%2Flsm%2F" aria-label="Share on Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=http%3A%2F%2Flocalhost%3A1313%2Fposts%2Flsm%2F" aria-label="Share on Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i><span>Share on Linkedin</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+
+
+    </div>
+
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-times"></i>
+    </div>
+
+
+
+
+    <img id="about-card-picture" src="https://myperflab.co.in/images/dp_new.png" alt="author xxx" />
+
+
+    
+    <h4 id="about-card-name">Pallavi &amp; Shubham</h4>
+    
+      <div id="about-card-bio">Super cool Performance Engineer duo in love with each other</div>
+    
+
+
+
+
+
+
+
+    <div id="about-card-link_p"><p>Connect with them on linkedin </p><a href=https://www.linkedin.com/in/pallavi-shinde-35704764/>Pallavi Shinde</a><p> </p> <a href=https://www.linkedin.com/in/shubham-sachan-74012058/>Shubham Sachan</a>
+    </div>
+
+
+
+
+
+
+
+  </div>
+</div>
+
+    
+
+    
+  
+    
+      <div id="cover" style="background-image:url('http://localhost:1313/images/cover.jpg');"></div>
+    
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/highlight.min.js" integrity="sha512-z+/WWfyD5tccCukM4VvONpEtLmbAm5LDu7eKiyMQJ9m7OfPEDL7gENyDRL3Yfe8XAuGsS2fS4xSMnl6d30kqGQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha512-uURl+ZXMBrF4AwGaWmEetzrd+J5/8NRkWAvJx5sbPSSuOb0bZLqf+tOzniObO00BjHa/dD7gub9oCGMLPQHtQA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+<script src="http://localhost:1313/js/js_script_for_theme.min.js"></script>
+
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-gE8KAQyFIzV1C9+GZ8TKJHZS2s+n7EjNtC+IMRn1l5+WYJTHOODUM6JSjZhFhqXmc7bG8Av6XXpckA4tYhflnw==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/apache.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-EWROca+bote+7Oaaar1F6y74iZj1r1F9rm/ly7o+/FwJopbBaWtsFDmaKoZDd3QiGU2pGacBirHJNivmGLYrow==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/go.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-GDVzAn0wpx1yVtQsRWmFc6PhJiLBPdUic+h4GWgljBh904O3JU10fk9EKNpVyIoPqkFn54rgL2QBG4BmUTMpiQ==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/http.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-UgZlma8NzkrDb/NWgmLIcTrH7i/CSnLLDRFqCSNF5NGPpjKmzyM25qcoXGOup8+cDakKyaiTDd7N4dyH4YT+IA==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/less.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-lot9koe73sfXIrUvIPM/UEhuMciN56RPyBdOyZgfO53P2lkWyyXN7J+njcxIIBRV+nVDQeiWtiXg+bLAJZDTfg==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/nginx.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-Zd3e7XxHP00TD0Imr0PIfeM0fl0v95kMWuhyAS3Wn1UTSXTkz0OhtRgBAr4JlmADRgiXr4x7lpeUdqaGN8xIog==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/puppet.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-qtqDO052iXMSP+5d/aE/jMtL9vIIGvONgTJziC2K/ZIB1yEGa55WVxGE9/08rSQ62EoDifS9SWVGZ7ihSLhzMA==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/scss.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-1NmkjnEDnwwwcu28KoQF8vs3oaPFokQHbmbtwGhFfeDsQZtVFI8zW2aE9O8yMYdpdyKV/5blE4pSWw4Z/Sv97w==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/stylus.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-B2wSfruPjr8EJL6IIzQr1eAuDwrsfIfccNf/LCEdxELCgC/S/ZMt/Uvk80aD79m7IqOqW+Sw8nbkvha20yZpzg==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/swift.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-28oDiQZGKUVN6wQ7PSLPNipOcmkCALXKwOi7bnkyFf8QiMZQxG9EQoy/iiNx6Zxj2cG2SbVa4dXKigQhu7GiFw==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/yaml.min.js"></script>
+  
+
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+
+
+    
+  </body>
+</html>
+

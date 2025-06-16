@@ -1,8 +1,8 @@
 simple steps for blog add and modify
 
-1. open cmd\gitbash (gitbash preferred)
+1. open cmd\gitbash\terminal 
 2. go to blog dir
-3. run hugo server (in cmd hugo server start)
+3. run hugo server (in terminal hugo server)
 4. check if blog site run without any error. Success will have following:
 		$ hugo server
 		port 1313 already in use, attempting to use an available port
@@ -38,4 +38,4 @@ simple steps for blog add and modify
 
 8. Until draft: false (check in blog/content/posts/test2.md) -- it will not appear in web page. Change it to 
 		draft: true
-9. 
+9. Keep images or any file in /blog/themes/my-theme/static/images

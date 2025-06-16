@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Data Structure on myPerfLab</title>
+    <link>http://localhost:1313/tags/data-structure/</link>
+    <description>Recent content in Data Structure on myPerfLab</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 24 Oct 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/data-structure/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>LSM Tree Explained</title>
+      <link>http://localhost:1313/posts/lsm/</link>
+      <pubDate>Thu, 24 Oct 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/lsm/</guid>
+      <description>LSM Tree &amp;ndash; Log-Structured Merge Tree&#xA;An LSM Tree is a data structure commonly used in databases to efficiently handle high-volume write operations. It’s particularly popular in systems where data is mostly written in large quantities (e.g., time-series databases, key-value stores, and log management systems). LSM Tree works by organizing data in layers and leveraging a combination of in-memory and on-disk data structures to ensure highly writes efficient without dropping read speed.</description>
+    </item>
+  </channel>
+</rss>

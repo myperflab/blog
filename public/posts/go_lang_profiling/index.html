@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+    <script type="application/ld+json">
+
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Go Code Profiling Guide with Examples",
+  
+  "image": "http://localhost:1313/images/s1.jpeg",
+  
+  "datePublished": "2024-12-09T00:00:00Z",
+  "dateModified": "2024-12-09T00:00:00Z",
+  "author": {
+    "@type": "Person",
+    "name": "Pallavi \u0026 Shubham",
+    
+    "image": "http://localhost:1313/images/dp_new.png"
+    
+  },
+  "mainEntityOfPage": { 
+    "@type": "WebPage",
+    "@id": "http:\/\/localhost:1313\/posts\/go_lang_profiling\/" 
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "myPerfLab",
+    
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/images/dp_new.png"
+    }
+    
+  },
+  "description": "A perf engineer\u0026rsquo;s best companions are profiling tools which can help them to reveal the bottlenecs of the application. There are a variety of the tools\\libs are available. In this write-up we will discuss about how golang libs\\tools can be used and how much effective + powerfull they are at capturing the profiles of the code\\application which can be used for analysis to identify the bottlenecks.\nGo Provides built-in tools for profiling CPU, memory, goroutines, and more through the pprof and runtime packages.",
+  "keywords": []
+}
+
+</script>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.123.7 with theme Tranquilpeak 0.5.3-BETA">
+<meta name="author" content="Pallavi &amp; Shubham">
+<meta name="keywords" content="">
+<meta name="description" content="A perf engineer&rsquo;s best companions are profiling tools which can help them to reveal the bottlenecs of the application. There are a variety of the tools\libs are available. In this write-up we will discuss about how golang libs\tools can be used and how much effective &#43; powerfull they are at capturing the profiles of the code\application which can be used for analysis to identify the bottlenecks.
+Go Provides built-in tools for profiling CPU, memory, goroutines, and more through the pprof and runtime packages.">
+
+
+<meta property="og:description" content="A perf engineer&rsquo;s best companions are profiling tools which can help them to reveal the bottlenecs of the application. There are a variety of the tools\libs are available. In this write-up we will discuss about how golang libs\tools can be used and how much effective &#43; powerfull they are at capturing the profiles of the code\application which can be used for analysis to identify the bottlenecks.
+Go Provides built-in tools for profiling CPU, memory, goroutines, and more through the pprof and runtime packages.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Go Code Profiling Guide with Examples">
+<meta name="twitter:title" content="Go Code Profiling Guide with Examples">
+<meta property="og:url" content="http://localhost:1313/posts/go_lang_profiling/">
+<meta property="twitter:url" content="http://localhost:1313/posts/go_lang_profiling/">
+<meta property="og:site_name" content="myPerfLab">
+<meta property="og:description" content="A perf engineer&rsquo;s best companions are profiling tools which can help them to reveal the bottlenecs of the application. There are a variety of the tools\libs are available. In this write-up we will discuss about how golang libs\tools can be used and how much effective &#43; powerfull they are at capturing the profiles of the code\application which can be used for analysis to identify the bottlenecks.
+Go Provides built-in tools for profiling CPU, memory, goroutines, and more through the pprof and runtime packages.">
+<meta name="twitter:description" content="A perf engineer&rsquo;s best companions are profiling tools which can help them to reveal the bottlenecs of the application. There are a variety of the tools\libs are available. In this write-up we will discuss about how golang libs\tools can be used and how much effective &#43; powerfull they are at capturing the profiles of the code\application which can be used for analysis to identify the bottlenecks.
+Go Provides built-in tools for profiling CPU, memory, goroutines, and more through the pprof and runtime packages.">
+<meta property="og:locale" content="en-us">
+
+  
+    <meta property="article:published_time" content="2024-12-09T00:00:00">
+  
+  
+    <meta property="article:modified_time" content="2024-12-09T00:00:00">
+  
+  
+  
+    
+      <meta property="article:section" content="perf engg">
+    
+      <meta property="article:section" content="perf testing">
+    
+  
+  
+    
+      <meta property="article:tag" content="Go Lang">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+
+
+  <meta property="og:image" content="https://www.gravatar.com/avatar/257da47f45d642c781b5d18b71badaa6?s=640">
+  <meta property="twitter:image" content="https://www.gravatar.com/avatar/257da47f45d642c781b5d18b71badaa6?s=640">
+
+
+
+
+
+  <meta property="og:image" content="http://localhost:1313/images/s1.jpeg">
+  <meta property="twitter:image" content="http://localhost:1313/images/s1.jpeg">
+
+
+    <title>Go Code Profiling Guide with Examples</title>
+
+    <link rel="icon" href="http://localhost:1313/favicon.png">
+    
+
+    
+
+    <link rel="canonical" href="http://localhost:1313/posts/go_lang_profiling/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha512-H9jrZiiopUdsLpg94A333EfumgUBpO9MdbxStdeITo+KEIMaNfHNvwyjjDJb+ERPaRS6DpyRlKbvPUasNItRyw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    
+    
+    <link rel="stylesheet" href="http://localhost:1313/css/style-h6ccsoet3mzkbb0wngshlfbaweimexgqcxj0h5hu4h82olsdzz6wmqdkajm.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+
+
+
+  <body>
+
+    <div id="blog">
+      <header id="header" data-behavior="4">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+
+    <a class="header-title-link" href="http://localhost:1313/" aria-label=>myPerfLab</a>
+    
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="http://localhost:1313/#about" aria-label="Open the link: /#about">
+    
+    
+    
+      
+        <img class="header-picture" src="https://myperflab.co.in/images/dp_new.png" alt="Author&#39;s picture" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="4">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="http://localhost:1313/#about" aria-label="Read more about the author">
+          <img class="sidebar-profile-picture" src=https://myperflab.co.in/images/dp_new.png alt="Author&#39;s picture" />
+        </a>
+        <h4 class="sidebar-profile-name">Pallavi &amp; Shubham</h4>
+        
+          <h5 class="sidebar-profile-bio">Super cool Performance Engineer duo in love with each other</h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="http://localhost:1313/" title="Home">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-home" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">Home</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="http://localhost:1313/categories" title="Categories">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-bookmark" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">Categories</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="http://localhost:1313/tags" title="Tags">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-tags" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">Tags</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="http://localhost:1313/archives" title="Archives">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-archive" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">Archives</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="http://localhost:1313/#about" title="About">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-question" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">About</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/myperflab" target="_blank" rel="noopener" title="GitHub">
+    
+      <i class="sidebar-button-icon fab fa-lg fa-github" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="4"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" id="top">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title">
+      Go Code Profiling Guide with Examples
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time datetime="2024-12-09T00:00:00Z">
+        
+  December 9, 2024
+
+      </time>
+    
+    
+  
+  
+    <span>in</span>
+    
+      <a class="category-link" href="http://localhost:1313/categories/perf-engg">perf engg</a>, 
+    
+      <a class="category-link" href="http://localhost:1313/categories/perf-testing">perf testing</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown">
+            <div class="main-content-wrap">
+              <p>A perf engineer&rsquo;s best companions are profiling tools which can help them to reveal the bottlenecs of the application. There are a variety of the tools\libs are available. In this write-up we will discuss about how golang libs\tools can be used and how much effective + powerfull they are at capturing the profiles of the code\application which can be used for analysis to identify the bottlenecks.</p>
+<p>Go Provides built-in tools for profiling CPU, memory, goroutines, and more through the pprof and runtime packages. This guide walks through profiling a sample Go program with performance issues and demonstrates how to detect and address them.</p>
+<h1 id="types-of-profiling-in-go">Types of Profiling in Go</h1>
+<table>
+<thead>
+<tr>
+<th>Profile Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CPU Profile</td>
+<td>Shows where the CPU time is spent</td>
+</tr>
+<tr>
+<td>Memory (Heap)</td>
+<td>Tracks memory allocations and leaks</td>
+</tr>
+<tr>
+<td>Goroutine Dump</td>
+<td>Lists current goroutines and stack traces</td>
+</tr>
+<tr>
+<td>Block Profile</td>
+<td>Reveals blocking operations like channel ops</td>
+</tr>
+<tr>
+<td>Mutex Profile</td>
+<td>Identifies lock contention</td>
+</tr>
+<tr>
+<td>Execution Trace</td>
+<td>Provides detailed timeline of program events</td>
+</tr>
+</tbody>
+</table>
+<h2 id="sample-go-program-with-cpu-and-memory-issues">Sample Go Program with CPU and Memory Issues</h2>
+<p>💡 Make sure to have <strong>Go language</strong> installed to run these experiments and collect the profiling dumps (<strong>pprofs</strong>).</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-go" data-lang="go"><span style="display:flex;"><span><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> (
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;math&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#e6db74">&#34;net/http&#34;</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">_</span> <span style="color:#e6db74">&#34;net/http/pprof&#34;</span>  <span style="color:#75715e">// Import pprof handlers
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#e6db74">&#34;sync&#34;</span>
+</span></span><span style="display:flex;"><span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">// Worker function that performs CPU-intensive calculations
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">worker</span>(<span style="color:#a6e22e">id</span> <span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">jobs</span> <span style="color:#f92672">&lt;-</span><span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">results</span> <span style="color:#66d9ef">chan</span><span style="color:#f92672">&lt;-</span> <span style="color:#66d9ef">float64</span>, <span style="color:#a6e22e">wg</span> <span style="color:#f92672">*</span><span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">WaitGroup</span>) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">defer</span> <span style="color:#a6e22e">wg</span>.<span style="color:#a6e22e">Done</span>()
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">j</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">jobs</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">// Simulate CPU-intensive work
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        <span style="color:#a6e22e">result</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0.0</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#ae81ff">1000000</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">result</span> <span style="color:#f92672">+=</span> <span style="color:#a6e22e">math</span>.<span style="color:#a6e22e">Sqrt</span>(float64(<span style="color:#a6e22e">i</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">j</span>))
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">results</span> <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">result</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">processJobs</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Number of workers and jobs
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">numWorkers</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">4</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">numJobs</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">100</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Create channels
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">jobs</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">int</span>, <span style="color:#a6e22e">numJobs</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">results</span> <span style="color:#f92672">:=</span> make(<span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">float64</span>, <span style="color:#a6e22e">numJobs</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Create WaitGroup to wait for all workers to finish
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">var</span> <span style="color:#a6e22e">wg</span> <span style="color:#a6e22e">sync</span>.<span style="color:#a6e22e">WaitGroup</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Start workers
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">w</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">1</span>; <span style="color:#a6e22e">w</span> <span style="color:#f92672">&lt;=</span> <span style="color:#a6e22e">numWorkers</span>; <span style="color:#a6e22e">w</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">wg</span>.<span style="color:#a6e22e">Add</span>(<span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">go</span> <span style="color:#a6e22e">worker</span>(<span style="color:#a6e22e">w</span>, <span style="color:#a6e22e">jobs</span>, <span style="color:#a6e22e">results</span>, <span style="color:#f92672">&amp;</span><span style="color:#a6e22e">wg</span>)
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Send jobs
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">j</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">1</span>; <span style="color:#a6e22e">j</span> <span style="color:#f92672">&lt;=</span> <span style="color:#a6e22e">numJobs</span>; <span style="color:#a6e22e">j</span><span style="color:#f92672">++</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">jobs</span> <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">j</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>    close(<span style="color:#a6e22e">jobs</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Start a goroutine to collect results
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>() {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">wg</span>.<span style="color:#a6e22e">Wait</span>()
+</span></span><span style="display:flex;"><span>        close(<span style="color:#a6e22e">results</span>)
+</span></span><span style="display:flex;"><span>    }()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Collect and print results
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#a6e22e">sum</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0.0</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span> <span style="color:#a6e22e">result</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">results</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">sum</span> <span style="color:#f92672">+=</span> <span style="color:#a6e22e">result</span>
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Total sum: %f\n&#34;</span>, <span style="color:#a6e22e">sum</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Start HTTP server with pprof handlers
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">go</span> <span style="color:#66d9ef">func</span>() {
+</span></span><span style="display:flex;"><span>         <span style="color:#66d9ef">if</span> <span style="color:#a6e22e">err</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">http</span>.<span style="color:#a6e22e">ListenAndServe</span>(<span style="color:#e6db74">&#34;localhost:4567&#34;</span>, <span style="color:#66d9ef">nil</span>); <span style="color:#a6e22e">err</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">nil</span> {
+</span></span><span style="display:flex;"><span>            <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Printf</span>(<span style="color:#e6db74">&#34;Error starting server: %v\n&#34;</span>, <span style="color:#a6e22e">err</span>)
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#75715e">// Run the workload continuously
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#66d9ef">for</span> {
+</span></span><span style="display:flex;"><span>        <span style="color:#a6e22e">processJobs</span>()
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>This example demonstrates several key concepts:</p>
+<ol>
+<li><strong>HTTP-based Profiling</strong>: Uses Go&rsquo;s built-in pprof HTTP server</li>
+<li><strong>Concurrent Processing</strong>: Uses multiple goroutines to process jobs in parallel</li>
+<li><strong>Channel Communication</strong>: Uses channels for job distribution and result collection</li>
+<li><strong>Synchronization</strong>: Implements WaitGroup to ensure all goroutines complete</li>
+</ol>
+<p>To run and analyze this program:</p>
+<ol>
+<li>
+<p><strong>Save</strong> the code to a file (e.g., <code>cpu_profile_demo.go</code>)</p>
+</li>
+<li>
+<p><strong>Run</strong> the program:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>go run cpu_profile_demo.go
+</span></span></code></pre></div></li>
+<li>
+<p>In a separate terminal, collect profiles using:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e"># For CPU profile (30 seconds)</span>
+</span></span><span style="display:flex;"><span>go tool pprof http://localhost:4567/debug/pprof/profile?seconds<span style="color:#f92672">=</span><span style="color:#ae81ff">30</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># For heap profile</span>
+</span></span><span style="display:flex;"><span>go tool pprof http://localhost:4567/debug/pprof/heap
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># For goroutine profile</span>
+</span></span><span style="display:flex;"><span>go tool pprof http://localhost:4567/debug/pprof/goroutine
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>or, simply run the following in any browser or cur
+</span></span><span style="display:flex;"><span>http://localhost:4567/debug/pprof/goroutine?debug<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>http://localhost:4567/debug/pprof/goroutine?debug<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>http://localhost:4567/debug/pprof/goroutine?debug<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span>
+</span></span></code></pre></div><p>debug levels - 1 or 2 or 3 defines the depth of the collected information. In my POV depth level 2 is good enough to identify the blocked or problamatic go routines.</p>
+<p>for the reference, attaching some sample pprof files</p>
+<p>📁 <a href="http://localhost:1313/images/pprof.zip">Download sample pprof files</a></p>
+</li>
+<li>
+<p>After collecting the pprofs, next things comes up - how to open/view?</p>
+<p><strong>Note:</strong> to render the graphs - Graphviz is required. for linux: apt install graphviz, for windows dpwnload it from internet and install it.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span><span style="color:#75715e">#pprofs:</span>
+</span></span><span style="display:flex;"><span>go tool pprof -http<span style="color:#f92672">=</span>:8080 &lt;pprof file name&gt;
+</span></span><span style="display:flex;"><span>use any free port, in my <span style="color:#66d9ef">case</span> <span style="color:#ae81ff">8080</span> is free.
+</span></span><span style="display:flex;"><span>it will open a page in the browser, in the view tab, there are multiple options to view the info. Use as fits best.
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#Dumps collected over brouser</span>
+</span></span><span style="display:flex;"><span>Use any text editor.
+</span></span></code></pre></div><p>for the code example, we can see following info from pprofs</p>
+<p>a. <strong>CPU pprofs</strong></p>
+<p><img src="http://localhost:1313/images/cpu_pprof.png" alt=""></p>
+<p>b. Similarly other pprofos (<strong>mem and goroutines</strong>) can be examined.</p>
+<p>c. <strong>goroutine dumps</strong> in text files:
+if we check, goroutine_debug_2.txt (in the zip file)</p>
+<ul>
+<li>there are 4 goroutines as per code, same can be seen in the dumos and there respective stack trace.</li>
+<li>go routine are similar to threads in java</li>
+<li>there are more information about channel and other go routines</li>
+</ul>
+</li>
+<li>
+<p>What information can be inferred from these pprofs or dumps:
+The profile will show you:</p>
+<ul>
+<li>Which goroutines are consuming the most CPU time</li>
+<li>How the work is distributed across goroutines</li>
+<li>Any potential bottlenecks in the concurrent processing</li>
+</ul>
+<p>This example is particularly useful for:</p>
+<ul>
+<li>On-demand profiling without modifying the code</li>
+<li>Collecting different types of profiles (CPU, heap, goroutines)</li>
+<li>Profiling long-running applications</li>
+<li>Real-time performance analysis
+SO far, we have covered CPU, Mem and go routine profiling. Now lets jump into Block Profiling</li>
+</ul>
+</li>
+</ol>
+<h2 id="block-profiling">Block Profiling</h2>
+<p>As the name suggest, A Block Profile captures where goroutines are blocked, i.e., waiting for synchronization events like:</p>
+<ul>
+<li>Waiting to receive/send on a channel</li>
+<li>Waiting to acquire a mutex (lock)</li>
+<li>Waiting on select, Cond, etc.</li>
+</ul>
+<p>These are often the performance bottlenecks in concurrent programs. A block profile helps in identify -</p>
+<ul>
+<li>Where goroutines block in your code</li>
+<li>How long they are blocked</li>
+<li>How often blocking happens at a specific code location</li>
+</ul>
+<p>How to capture block profile: similar as CPU profiling, only diff is end point</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>go tool pprof http://localhost:4567/debug/pprof/block?seconds<span style="color:#f92672">=</span><span style="color:#ae81ff">30</span>
+</span></span></code></pre></div><h3 id="use-following-code-block-to-simulate">use following code block to simulate</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>package main
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>import <span style="color:#f92672">(</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;fmt&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;math&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;net/http&#34;</span>
+</span></span><span style="display:flex;"><span>	_ <span style="color:#e6db74">&#34;net/http/pprof&#34;</span> // Import pprof handlers
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;sync&#34;</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#e6db74">&#34;time&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>// demonstrateBlockProfiling creates scenarios that will show up in block profiling
+</span></span><span style="display:flex;"><span>func demonstrateBlockProfiling<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>	// Create channels with very small buffers to force more blocking
+</span></span><span style="display:flex;"><span>	ch1 :<span style="color:#f92672">=</span> make<span style="color:#f92672">(</span>chan int, 1<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>	ch2 :<span style="color:#f92672">=</span> make<span style="color:#f92672">(</span>chan int, 1<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	// Create multiple mutexes <span style="color:#66d9ef">for</span> more contention
+</span></span><span style="display:flex;"><span>	var mu1, mu2 sync.Mutex
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	// Launch more goroutines with longer running times
+</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">for</span> i :<span style="color:#f92672">=</span> 0; i &lt; 10; i++ <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>		go func<span style="color:#f92672">(</span>id int<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>			fmt.Printf<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Starting blocking goroutine %d\n&#34;</span>, id<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">for</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>				// Contend <span style="color:#66d9ef">for</span> first mutex
+</span></span><span style="display:flex;"><span>				mu1.Lock<span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>				// Simulate some work
+</span></span><span style="display:flex;"><span>				time.Sleep<span style="color:#f92672">(</span>time.Millisecond * 100<span style="color:#f92672">)</span> // Increased sleep time
+</span></span><span style="display:flex;"><span>				mu1.Unlock<span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>				// Contend <span style="color:#66d9ef">for</span> second mutex
+</span></span><span style="display:flex;"><span>				mu2.Lock<span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>				time.Sleep<span style="color:#f92672">(</span>time.Millisecond * 80<span style="color:#f92672">)</span> // Increased sleep time
+</span></span><span style="display:flex;"><span>				mu2.Unlock<span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>				// Force blocking on channel operations
+</span></span><span style="display:flex;"><span>				ch1 &lt;- id // This will block when channel is full
+</span></span><span style="display:flex;"><span>				time.Sleep<span style="color:#f92672">(</span>time.Millisecond * 50<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>				&lt;-ch1
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>				ch2 &lt;- id // This will block when channel is full
+</span></span><span style="display:flex;"><span>				time.Sleep<span style="color:#f92672">(</span>time.Millisecond * 50<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>				&lt;-ch2
+</span></span><span style="display:flex;"><span>			<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#f92672">}(</span>i<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>func main<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>	// Enable block profiling
+</span></span><span style="display:flex;"><span>	runtime.SetBlockProfileRate<span style="color:#f92672">(</span>1<span style="color:#f92672">)</span> // Enable block profiling with rate <span style="color:#ae81ff">1</span> <span style="color:#f92672">(</span>every blocking event<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	// Start HTTP server with pprof handlers
+</span></span><span style="display:flex;"><span>	go func<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>		fmt.Println<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Starting pprof server on http://localhost:4567&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> err :<span style="color:#f92672">=</span> http.ListenAndServe<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;localhost:4567&#34;</span>, nil<span style="color:#f92672">)</span>; err !<span style="color:#f92672">=</span> nil <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>			fmt.Printf<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Error starting server: %v\n&#34;</span>, err<span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">}()</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>	// Start block profiling demonstration in background
+</span></span><span style="display:flex;"><span>	fmt.Println<span style="color:#f92672">(</span><span style="color:#e6db74">&#34;Starting block profiling demonstration...&#34;</span><span style="color:#f92672">)</span>
+</span></span><span style="display:flex;"><span>	go demonstrateBlockProfiling<span style="color:#f92672">()</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><p><strong>Note:</strong> runtime.SetBlockProfileRate(1) it is required to have block profile.</p>
+<ul>
+<li>0 (default) = block profiling is disabled</li>
+<li>1 = record every blocking event</li>
+<li>n &gt; 1 = record 1 in n blocking events</li>
+<li>negative = disable block profiling</li>
+</ul>
+<p>Without calling runtime.SetBlockProfileRate(1), the block profiler won&rsquo;t collect any data. This is different from CPU profiling which is enabled by default when you import net/http/pprof. Block profiling is more expensive in terms of performance overhead, which is why it&rsquo;s opt-in rather than enabled by default.</p>
+<p>pprof let&rsquo;s know which goroutine, loc or channel is locked while sampling. And that&rsquo;s how it is diff from normal CPU profiling, as cpu profilied tells which are the func/methods are consuming most of the cpu.</p>
+<p>In general, CPU profiling is more common than block profiling. With this, quetion comes when should be block profiles is used:</p>
+<p>Use it when:</p>
+<ul>
+<li>App is running slow but CPU isn&rsquo;t maxed</li>
+<li>suspect lock contention</li>
+<li>timeouts, hung handlers, or queue backups</li>
+</ul>
+<p>It helps you find the bottlenecks not in computation, but in coordination between parts of your program.</p>
+<h2 id="mutex-profiling">Mutex Profiling</h2>
+<p>Roughly, we can say mutex profiling is a sub set of Block Profiling, where it tracks down only <strong>how long goroutines wait to acquire a mutex (specifically sync.Mutex or sync.RWMutex).</strong></p>
+<p>similar to block profile, it has to be enabled with <em><strong>runtime.SetMutexProfileFraction(n)</strong></em></p>
+<h3 id="how-it-works">How it works:</h3>
+<p>When multiple goroutines try to acquire the same mutex, the ones that have to wait are measured.
+The profile records:</p>
+<ul>
+<li>Lock wait time</li>
+<li>Number of blocking instances</li>
+<li>Stack trace where it happened</li>
+</ul>
+              
+
+
+            </div>
+          </div>
+
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">TAGGED IN</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="http://localhost:1313/tags/go-lang/">Go Lang</a>
+
+                  </div>
+                
+              
+            
+            
+<div class="post-actions-wrap">
+  <nav >
+    <ul class="post-actions post-action-nav">
+      
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="http://localhost:1313/posts/welcome-page/" data-tooltip="Welcome to myPerfLab" aria-label="NEXT: Welcome to myPerfLab">
+          
+              <i class="fa fa-angle-left"></i>
+              <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+            </a>
+        </li>
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="http://localhost:1313/posts/lsm/" data-tooltip="LSM Tree Explained" aria-label="PREVIOUS: LSM Tree Explained">
+          
+              <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+              <i class="fa fa-angle-right"></i>
+            </a>
+        </li>
+      
+    </ul>
+  </nav>
+<ul class="post-actions post-action-share" >
+  
+    <li class="post-action hide-lg hide-md hide-sm">
+      <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+        <i class="fa fa-share-alt" aria-hidden="true"></i>
+      </a>
+    </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:1313/posts/go_lang_profiling/" title="Share on Facebook" aria-label="Share on Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://localhost:1313/posts/go_lang_profiling/" title="Share on Twitter" aria-label="Share on Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=http://localhost:1313/posts/go_lang_profiling/" title="Share on Linkedin" aria-label="Share on Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+  
+  
+  <li class="post-action">
+    
+      <a class="post-action-btn btn btn--default" href="#top" aria-label="Back to top">
+      <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    
+    </a>
+  </li>
+</ul>
+</div>
+
+
+            
+  
+
+
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2025 Pallavi &amp; Shubham. All Rights Reserved
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+        
+<div class="post-actions-wrap">
+  <nav >
+    <ul class="post-actions post-action-nav">
+      
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="http://localhost:1313/posts/welcome-page/" data-tooltip="Welcome to myPerfLab" aria-label="NEXT: Welcome to myPerfLab">
+          
+              <i class="fa fa-angle-left"></i>
+              <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+            </a>
+        </li>
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="http://localhost:1313/posts/lsm/" data-tooltip="LSM Tree Explained" aria-label="PREVIOUS: LSM Tree Explained">
+          
+              <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+              <i class="fa fa-angle-right"></i>
+            </a>
+        </li>
+      
+    </ul>
+  </nav>
+<ul class="post-actions post-action-share" >
+  
+    <li class="post-action hide-lg hide-md hide-sm">
+      <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+        <i class="fa fa-share-alt" aria-hidden="true"></i>
+      </a>
+    </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:1313/posts/go_lang_profiling/" title="Share on Facebook" aria-label="Share on Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://localhost:1313/posts/go_lang_profiling/" title="Share on Twitter" aria-label="Share on Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=http://localhost:1313/posts/go_lang_profiling/" title="Share on Linkedin" aria-label="Share on Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+  
+  
+  <li class="post-action">
+    
+      <a class="post-action-btn btn btn--default" href="#top" aria-label="Back to top">
+      <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    
+    </a>
+  </li>
+</ul>
+</div>
+
+
+      </div>
+      
+<div id="share-options-bar" class="share-options-bar" data-behavior="4">
+  <i id="btn-close-shareoptions" class="fa fa-times"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A1313%2Fposts%2Fgo_lang_profiling%2F" aria-label="Share on Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i><span>Share on Facebook</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http%3A%2F%2Flocalhost%3A1313%2Fposts%2Fgo_lang_profiling%2F" aria-label="Share on Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=http%3A%2F%2Flocalhost%3A1313%2Fposts%2Fgo_lang_profiling%2F" aria-label="Share on Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i><span>Share on Linkedin</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+
+
+    </div>
+
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-times"></i>
+    </div>
+
+
+
+
+    <img id="about-card-picture" src="https://myperflab.co.in/images/dp_new.png" alt="author xxx" />
+
+
+    
+    <h4 id="about-card-name">Pallavi &amp; Shubham</h4>
+    
+      <div id="about-card-bio">Super cool Performance Engineer duo in love with each other</div>
+    
+
+
+
+
+
+
+
+    <div id="about-card-link_p"><p>Connect with them on linkedin </p><a href=https://www.linkedin.com/in/pallavi-shinde-35704764/>Pallavi Shinde</a><p> </p> <a href=https://www.linkedin.com/in/shubham-sachan-74012058/>Shubham Sachan</a>
+    </div>
+
+
+
+
+
+
+
+  </div>
+</div>
+
+    
+
+    
+  
+    
+      <div id="cover" style="background-image:url('http://localhost:1313/images/cover.jpg');"></div>
+    
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/highlight.min.js" integrity="sha512-z+/WWfyD5tccCukM4VvONpEtLmbAm5LDu7eKiyMQJ9m7OfPEDL7gENyDRL3Yfe8XAuGsS2fS4xSMnl6d30kqGQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha512-uURl+ZXMBrF4AwGaWmEetzrd+J5/8NRkWAvJx5sbPSSuOb0bZLqf+tOzniObO00BjHa/dD7gub9oCGMLPQHtQA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+<script src="http://localhost:1313/js/js_script_for_theme.min.js"></script>
+
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-gE8KAQyFIzV1C9+GZ8TKJHZS2s+n7EjNtC+IMRn1l5+WYJTHOODUM6JSjZhFhqXmc7bG8Av6XXpckA4tYhflnw==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/apache.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-EWROca+bote+7Oaaar1F6y74iZj1r1F9rm/ly7o+/FwJopbBaWtsFDmaKoZDd3QiGU2pGacBirHJNivmGLYrow==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/go.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-GDVzAn0wpx1yVtQsRWmFc6PhJiLBPdUic+h4GWgljBh904O3JU10fk9EKNpVyIoPqkFn54rgL2QBG4BmUTMpiQ==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/http.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-UgZlma8NzkrDb/NWgmLIcTrH7i/CSnLLDRFqCSNF5NGPpjKmzyM25qcoXGOup8+cDakKyaiTDd7N4dyH4YT+IA==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/less.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-lot9koe73sfXIrUvIPM/UEhuMciN56RPyBdOyZgfO53P2lkWyyXN7J+njcxIIBRV+nVDQeiWtiXg+bLAJZDTfg==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/nginx.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-Zd3e7XxHP00TD0Imr0PIfeM0fl0v95kMWuhyAS3Wn1UTSXTkz0OhtRgBAr4JlmADRgiXr4x7lpeUdqaGN8xIog==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/puppet.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-qtqDO052iXMSP+5d/aE/jMtL9vIIGvONgTJziC2K/ZIB1yEGa55WVxGE9/08rSQ62EoDifS9SWVGZ7ihSLhzMA==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/scss.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-1NmkjnEDnwwwcu28KoQF8vs3oaPFokQHbmbtwGhFfeDsQZtVFI8zW2aE9O8yMYdpdyKV/5blE4pSWw4Z/Sv97w==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/stylus.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-B2wSfruPjr8EJL6IIzQr1eAuDwrsfIfccNf/LCEdxELCgC/S/ZMt/Uvk80aD79m7IqOqW+Sw8nbkvha20yZpzg==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/swift.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-28oDiQZGKUVN6wQ7PSLPNipOcmkCALXKwOi7bnkyFf8QiMZQxG9EQoy/iiNx6Zxj2cG2SbVa4dXKigQhu7GiFw==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/yaml.min.js"></script>
+  
+
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+
+
+    
+  </body>
+</html>
+

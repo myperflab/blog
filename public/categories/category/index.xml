@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>&lt;Category&gt; on myPerfLab</title>
+    <link>http://localhost:1313/categories/category/</link>
+    <description>Recent content in &lt;Category&gt; on myPerfLab</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 25 Oct 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/categories/category/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Title</title>
+      <link>http://localhost:1313/wip/template/</link>
+      <pubDate>Fri, 25 Oct 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/wip/template/</guid>
+      <description>write intoduction here&#xA;deep dive into the main topic and definitions from here onwards</description>
+    </item>
+  </channel>
+</rss>
