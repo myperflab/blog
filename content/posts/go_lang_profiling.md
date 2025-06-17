@@ -33,6 +33,7 @@ Go Provides built-in tools for profiling CPU, memory, goroutines, and more throu
 
 💡 Make sure to have **Go language** installed to run these experiments and collect the profiling dumps (**pprofs**).
 
+Sample go program to try put profiling concepts. 
 ```go
 package main
 
@@ -120,12 +121,15 @@ This example demonstrates several key concepts:
 
 To run and analyze this program:
 
-1. **Save** the code to a file (e.g., `cpu_profile_demo.go`)
+1. **Save** the code to a file (e.g., `main.go`)
 2. **Run** the program:
    ```bash
-   go run cpu_profile_demo.go
+   go run main.go
    ```
 3. In a separate terminal, collect profiles using:
+
+    There is also a standard HTTP interface which can be implemented with _ "net/http/pprof, with this pprofs can be  collected easily as below: 
+
    ```bash
    # For CPU profile (30 seconds)
    go tool pprof http://localhost:4567/debug/pprof/profile?seconds=30
@@ -305,3 +309,20 @@ The profile records:
 - Number of blocking instances
 - Stack trace where it happened
 
+## Execution Trace
+It’s like a high-speed camera that captures everything happening in real time inside your Go program.
+But it has too much over head on the program execution. Its powerful but limited on scale. bigger the code base difficult to analyze as its output could be pretty huge. 
+
+**How to capture trace?**
+if implemented: import _ "net/http/pprof"
+```bash
+wget http://localhost:4567/debug/pprof/trace?seconds=10 -O trace_file_01
+
+To view trace use:
+
+go tool trace trace_file_01
+
+#It will open an UI page from there navigate to other pages which has analyzed data to view. 
+#Traces provides a lot of data to analyze
+```
+For details on tracing visit [go lang trace official doc](https://pkg.go.dev/runtime/trace)

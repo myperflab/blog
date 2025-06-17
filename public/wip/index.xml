@@ -2,32 +2,32 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Wips on myPerfLab</title>
-    <link>http://localhost:1313/wip/</link>
+    <link>http://localhost:38427/wip/</link>
     <description>Recent content in Wips on myPerfLab</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Fri, 25 Oct 2024 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://localhost:1313/wip/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:38427/wip/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Title</title>
-      <link>http://localhost:1313/wip/template/</link>
+      <link>http://localhost:38427/wip/template/</link>
       <pubDate>Fri, 25 Oct 2024 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/wip/template/</guid>
+      <guid>http://localhost:38427/wip/template/</guid>
       <description>write intoduction here&#xA;deep dive into the main topic and definitions from here onwards</description>
     </item>
     <item>
       <title>Does only CPU based scaling is good enough? Read to know more about feedback controlled auto scaling</title>
-      <link>http://localhost:1313/wip/feedback_scaling/</link>
+      <link>http://localhost:38427/wip/feedback_scaling/</link>
       <pubDate>Sun, 15 Jan 2023 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/wip/feedback_scaling/</guid>
+      <guid>http://localhost:38427/wip/feedback_scaling/</guid>
       <description>Data security getting important than ever, more often ransomware attack happens and some time its severity is very high and critical. Organizations\Enterprises has no other option except paying the ransom. Recently I have stumbled on a very good blog/article about how file entropy can be used as a good measure to restrict and identify such attacks. Click here to read more. Those who are new to data security, entropy, file signature or packers can read below to form initial understanding:</description>
     </item>
     <item>
       <title></title>
-      <link>http://localhost:1313/wip/ideas/</link>
+      <link>http://localhost:38427/wip/ideas/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/wip/ideas/</guid>
-      <description> go profiling EC2 arcgitecture what is Kernel based virtual machine nitro hypervisor file system basics </description>
+      <guid>http://localhost:38427/wip/ideas/</guid>
+      <description>go profiling EC2 architecture what is Kernel based virtual machine nitro hypervisor file system basics du behind the scene ? how does it gets the size find behind the scene ? file system (ext4) Journal what it is and when it is used? virtual shadow copy? Metadata inodes why linux does not have creation time of files?</description>
     </item>
   </channel>
 </rss>

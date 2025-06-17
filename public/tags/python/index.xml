@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Python on myPerfLab</title>
-    <link>http://localhost:1313/tags/python/</link>
+    <link>http://localhost:38427/tags/python/</link>
     <description>Recent content in Python on myPerfLab</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sat, 15 Oct 2022 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/python/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:38427/tags/python/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Who is faster - Asyncio / MultiThreading / MultiProcessing / Sync in Python</title>
-      <link>http://localhost:1313/posts/who-is-faster/</link>
+      <link>http://localhost:38427/posts/who-is-faster/</link>
       <pubDate>Sat, 15 Oct 2022 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/who-is-faster/</guid>
+      <guid>http://localhost:38427/posts/who-is-faster/</guid>
       <description>As a curious performance engineer we always want to find out the fastest method and implement/advise the same to get the maximum performance. Click here to read more</description>
     </item>
   </channel>
