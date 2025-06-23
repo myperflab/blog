@@ -2,113 +2,113 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:38427/</loc>
+    <loc>http://localhost:1313/</loc>
     <lastmod>2025-05-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/tags/performance-engineering/</loc>
+    <loc>http://localhost:1313/tags/performance-engineering/</loc>
     <lastmod>2025-05-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/tags/performance-testing/</loc>
+    <loc>http://localhost:1313/tags/performance-testing/</loc>
     <lastmod>2025-05-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/posts/</loc>
+    <loc>http://localhost:1313/posts/</loc>
     <lastmod>2025-05-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/tags/</loc>
+    <loc>http://localhost:1313/tags/</loc>
     <lastmod>2025-05-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/posts/welcome-page/</loc>
+    <loc>http://localhost:1313/posts/welcome-page/</loc>
     <lastmod>2025-05-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/categories/</loc>
+    <loc>http://localhost:1313/categories/</loc>
     <lastmod>2024-12-09T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/posts/go_lang_profiling/</loc>
+    <loc>http://localhost:1313/posts/go_lang_profiling/</loc>
     <lastmod>2024-12-09T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/tags/go-lang/</loc>
+    <loc>http://localhost:1313/tags/go-lang/</loc>
     <lastmod>2024-12-09T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/categories/perf-engg/</loc>
+    <loc>http://localhost:1313/categories/perf-engg/</loc>
     <lastmod>2024-12-09T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/categories/perf-testing/</loc>
+    <loc>http://localhost:1313/categories/perf-testing/</loc>
     <lastmod>2024-12-09T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/categories/category/</loc>
+    <loc>http://localhost:1313/categories/category/</loc>
     <lastmod>2024-10-25T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/tags/tags/</loc>
+    <loc>http://localhost:1313/tags/tags/</loc>
     <lastmod>2024-10-25T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/wip/template/</loc>
+    <loc>http://localhost:1313/wip/template/</loc>
     <lastmod>2024-10-25T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/wip/</loc>
+    <loc>http://localhost:1313/wip/</loc>
     <lastmod>2024-10-25T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/tags/data-structure/</loc>
+    <loc>http://localhost:1313/tags/data-structure/</loc>
     <lastmod>2024-10-24T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/categories/ds-algorithms/</loc>
+    <loc>http://localhost:1313/categories/ds-algorithms/</loc>
     <lastmod>2024-10-24T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/posts/lsm/</loc>
+    <loc>http://localhost:1313/posts/lsm/</loc>
     <lastmod>2024-10-24T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/tags/auto-scaling/</loc>
+    <loc>http://localhost:1313/tags/auto-scaling/</loc>
     <lastmod>2023-01-15T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/categories/auto-scaling/</loc>
+    <loc>http://localhost:1313/categories/auto-scaling/</loc>
     <lastmod>2023-01-15T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/tags/aws/</loc>
+    <loc>http://localhost:1313/tags/aws/</loc>
     <lastmod>2023-01-15T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/wip/feedback_scaling/</loc>
+    <loc>http://localhost:1313/wip/feedback_scaling/</loc>
     <lastmod>2023-01-15T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/categories/performance-engineering/</loc>
+    <loc>http://localhost:1313/categories/performance-engineering/</loc>
     <lastmod>2023-01-15T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/categories/data-security/</loc>
+    <loc>http://localhost:1313/categories/data-security/</loc>
     <lastmod>2023-01-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/posts/entropy_ransome/</loc>
+    <loc>http://localhost:1313/posts/entropy_ransome/</loc>
     <lastmod>2023-01-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/tags/ransomware/</loc>
+    <loc>http://localhost:1313/tags/ransomware/</loc>
     <lastmod>2023-01-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/posts/missing-perf-counters-from-win-ec2/</loc>
+    <loc>http://localhost:1313/posts/missing-perf-counters-from-win-ec2/</loc>
     <lastmod>2022-11-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/tags/asyncio/</loc>
+    <loc>http://localhost:1313/tags/asyncio/</loc>
     <lastmod>2022-10-15T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/tags/multithreading/</loc>
+    <loc>http://localhost:1313/tags/multithreading/</loc>
     <lastmod>2022-10-15T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/categories/performance-testing/</loc>
+    <loc>http://localhost:1313/categories/performance-testing/</loc>
     <lastmod>2022-10-15T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/tags/python/</loc>
+    <loc>http://localhost:1313/tags/python/</loc>
     <lastmod>2022-10-15T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/posts/who-is-faster/</loc>
+    <loc>http://localhost:1313/posts/who-is-faster/</loc>
     <lastmod>2022-10-15T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/tags/fio/</loc>
+    <loc>http://localhost:1313/tags/fio/</loc>
     <lastmod>2022-04-20T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/tags/linux/</loc>
+    <loc>http://localhost:1313/tags/linux/</loc>
     <lastmod>2022-04-20T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/posts/fio/</loc>
+    <loc>http://localhost:1313/posts/fio/</loc>
     <lastmod>2022-04-20T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:38427/wip/ideas/</loc>
+    <loc>http://localhost:1313/wip/ideas/</loc>
   </url><url>
-    <loc>http://localhost:38427/archives/</loc>
+    <loc>http://localhost:1313/archives/</loc>
   </url>
 </urlset>

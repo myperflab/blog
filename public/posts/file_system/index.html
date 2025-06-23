@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    
+    <script type="application/ld+json">
+
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "File System Basics",
+  
+  "image": "http://localhost:1313/images/aircraft_carrier.jpg",
+  
+  "datePublished": "2024-04-10T00:00:00Z",
+  "dateModified": "2024-04-10T00:00:00Z",
+  "author": {
+    "@type": "Person",
+    "name": "Pallavi \u0026 Shubham",
+    
+    "image": "http://localhost:1313/images/dp_new.png"
+    
+  },
+  "mainEntityOfPage": { 
+    "@type": "WebPage",
+    "@id": "http:\/\/localhost:1313\/posts\/file_system\/" 
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "myPerfLab",
+    
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/images/dp_new.png"
+    }
+    
+  },
+  "description": "Understanding File Systems Note: This guide focuses on the ext4 file system, one of the most widely used file systems in Linux.\nCore Concepts Here are the fundamental concepts you need to understand about file systems:\n1. Inode (Linux) Contains metadata of files Stores information such as: File size File owner Block pointers Access permissions Timestamps 2. Storage Units Cluster/Block: The smallest unit of storage allocation Typically 4 KB in size Helps optimize disk space usage 3.",
+  "keywords": []
+}
+
+</script>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="generator" content="Hugo 0.123.7 with theme Tranquilpeak 0.5.3-BETA">
+<meta name="author" content="Pallavi &amp; Shubham">
+<meta name="keywords" content="">
+<meta name="description" content="Understanding File Systems Note: This guide focuses on the ext4 file system, one of the most widely used file systems in Linux.
+Core Concepts Here are the fundamental concepts you need to understand about file systems:
+1. Inode (Linux) Contains metadata of files Stores information such as: File size File owner Block pointers Access permissions Timestamps 2. Storage Units Cluster/Block: The smallest unit of storage allocation Typically 4 KB in size Helps optimize disk space usage 3.">
+
+
+<meta property="og:description" content="Understanding File Systems Note: This guide focuses on the ext4 file system, one of the most widely used file systems in Linux.
+Core Concepts Here are the fundamental concepts you need to understand about file systems:
+1. Inode (Linux) Contains metadata of files Stores information such as: File size File owner Block pointers Access permissions Timestamps 2. Storage Units Cluster/Block: The smallest unit of storage allocation Typically 4 KB in size Helps optimize disk space usage 3.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="File System Basics">
+<meta name="twitter:title" content="File System Basics">
+<meta property="og:url" content="http://localhost:1313/posts/file_system/">
+<meta property="twitter:url" content="http://localhost:1313/posts/file_system/">
+<meta property="og:site_name" content="myPerfLab">
+<meta property="og:description" content="Understanding File Systems Note: This guide focuses on the ext4 file system, one of the most widely used file systems in Linux.
+Core Concepts Here are the fundamental concepts you need to understand about file systems:
+1. Inode (Linux) Contains metadata of files Stores information such as: File size File owner Block pointers Access permissions Timestamps 2. Storage Units Cluster/Block: The smallest unit of storage allocation Typically 4 KB in size Helps optimize disk space usage 3.">
+<meta name="twitter:description" content="Understanding File Systems Note: This guide focuses on the ext4 file system, one of the most widely used file systems in Linux.
+Core Concepts Here are the fundamental concepts you need to understand about file systems:
+1. Inode (Linux) Contains metadata of files Stores information such as: File size File owner Block pointers Access permissions Timestamps 2. Storage Units Cluster/Block: The smallest unit of storage allocation Typically 4 KB in size Helps optimize disk space usage 3.">
+<meta property="og:locale" content="en-us">
+
+  
+    <meta property="article:published_time" content="2024-04-10T00:00:00">
+  
+  
+    <meta property="article:modified_time" content="2024-04-10T00:00:00">
+  
+  
+  
+    
+      <meta property="article:section" content="perf engg">
+    
+      <meta property="article:section" content="perf testing">
+    
+  
+  
+    
+      <meta property="article:tag" content="Go Lang">
+    
+  
+
+
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+
+
+  <meta property="og:image" content="https://www.gravatar.com/avatar/257da47f45d642c781b5d18b71badaa6?s=640">
+  <meta property="twitter:image" content="https://www.gravatar.com/avatar/257da47f45d642c781b5d18b71badaa6?s=640">
+
+
+
+
+
+  <meta property="og:image" content="http://localhost:1313/images/aircraft_carrier.jpg">
+  <meta property="twitter:image" content="http://localhost:1313/images/aircraft_carrier.jpg">
+
+
+    <title>File System Basics</title>
+
+    <link rel="icon" href="http://localhost:1313/favicon.png">
+    
+
+    
+
+    <link rel="canonical" href="http://localhost:1313/posts/file_system/">
+
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha512-H9jrZiiopUdsLpg94A333EfumgUBpO9MdbxStdeITo+KEIMaNfHNvwyjjDJb+ERPaRS6DpyRlKbvPUasNItRyw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    
+    
+    <link rel="stylesheet" href="http://localhost:1313/css/style-h6ccsoet3mzkbb0wngshlfbaweimexgqcxj0h5hu4h82olsdzz6wmqdkajm.min.css" />
+    
+    
+
+    
+      
+    
+    
+  </head>
+
+
+
+
+  <body>
+
+    <div id="blog">
+      <header id="header" data-behavior="4">
+  <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+  <div class="header-title">
+
+    <a class="header-title-link" href="http://localhost:1313/" aria-label=>myPerfLab</a>
+    
+  </div>
+  
+    
+      <a class="header-right-picture "
+         href="http://localhost:1313/#about" aria-label="Open the link: /#about">
+    
+    
+    
+      
+        <img class="header-picture" src="https://myperflab.co.in/images/dp_new.png" alt="Author&#39;s picture" />
+      
+    
+    </a>
+  
+</header>
+
+      <nav id="sidebar" data-behavior="4">
+  <div class="sidebar-container">
+    
+      <div class="sidebar-profile">
+        <a href="http://localhost:1313/#about" aria-label="Read more about the author">
+          <img class="sidebar-profile-picture" src=https://myperflab.co.in/images/dp_new.png alt="Author&#39;s picture" />
+        </a>
+        <h4 class="sidebar-profile-name">Pallavi &amp; Shubham</h4>
+        
+          <h5 class="sidebar-profile-bio">Super cool Performance Engineer duo in love with each other</h5>
+        
+      </div>
+    
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="http://localhost:1313/" title="Home">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-home" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">Home</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="http://localhost:1313/categories" title="Categories">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-bookmark" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">Categories</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="http://localhost:1313/tags" title="Tags">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-tags" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">Tags</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="http://localhost:1313/archives" title="Archives">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-archive" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">Archives</span>
+    </a>
+  </li>
+
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="http://localhost:1313/#about" title="About">
+    
+      <i class="sidebar-button-icon fas fa-lg fa-question" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">About</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+  <li class="sidebar-button">
+    
+      <a class="sidebar-button-link " href="https://github.com/myperflab" target="_blank" rel="noopener" title="GitHub">
+    
+      <i class="sidebar-button-icon fab fa-lg fa-github" aria-hidden="true"></i>
+      
+      <span class="sidebar-button-desc">GitHub</span>
+    </a>
+  </li>
+
+
+    </ul>
+    <ul class="sidebar-buttons">
+      
+
+    </ul>
+  </div>
+</nav>
+
+      
+
+      <div id="main" data-behavior="4"
+        class="
+               hasCoverMetaIn
+               ">
+        <article class="post" id="top">
+          
+          
+            <div class="post-header main-content-wrap text-left">
+  
+    <h1 class="post-title">
+      File System Basics
+    </h1>
+  
+  
+  <div class="postShorten-meta post-meta">
+    
+      <time datetime="2024-04-10T00:00:00Z">
+        
+  April 10, 2024
+
+      </time>
+    
+    
+  
+  
+    <span>in</span>
+    
+      <a class="category-link" href="http://localhost:1313/categories/perf-engg">perf engg</a>, 
+    
+      <a class="category-link" href="http://localhost:1313/categories/perf-testing">perf testing</a>
+    
+  
+
+  </div>
+
+</div>
+          
+          <div class="post-content markdown">
+            <div class="main-content-wrap">
+              <h1 id="understanding-file-systems">Understanding File Systems</h1>
+<blockquote>
+<p><strong>Note:</strong> This guide focuses on the ext4 file system, one of the most widely used file systems in Linux.</p>
+</blockquote>
+<h2 id="core-concepts">Core Concepts</h2>
+<p>Here are the fundamental concepts you need to understand about file systems:</p>
+<h3 id="1-inode-linux">1. Inode (Linux)</h3>
+<ul>
+<li>Contains metadata of files</li>
+<li>Stores information such as:
+<ul>
+<li>File size</li>
+<li>File owner</li>
+<li>Block pointers</li>
+<li>Access permissions</li>
+<li>Timestamps</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-storage-units">2. Storage Units</h3>
+<ul>
+<li><strong>Cluster/Block</strong>: The smallest unit of storage allocation
+<ul>
+<li>Typically 4 KB in size</li>
+<li>Helps optimize disk space usage</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-file-system-operations">3. File System Operations</h3>
+<ul>
+<li><strong>Mounting</strong>: The process of making a file system accessible through a specific directory</li>
+<li><strong>Journaling</strong>: A crash-safety feature that logs changes before committing them to disk
+<ul>
+<li>Helps maintain file system integrity</li>
+<li>Prevents data corruption during system crashes</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-special-file-types">4. Special File Types</h3>
+<ul>
+<li><strong>Sparse Files</strong>: Files that efficiently store sequences of zeros by not allocating actual disk blocks</li>
+<li><strong>File References</strong>:
+<ul>
+<li>Symbolic Links: Pointer-based references to other files</li>
+<li>Hard Links: Direct references to file inodes</li>
+</ul>
+</li>
+</ul>
+<h2 id="file-system-architecture">File System Architecture</h2>
+<h3 id="1-basic-structure">1. Basic Structure</h3>
+<ul>
+<li><strong>Boot Block</strong>: Contains information for bootstrapping the operating system</li>
+<li><strong>Superblock</strong>: Stores critical metadata about the file system</li>
+<li><strong>Inode Table</strong>: Contains metadata for all files (Unix-like systems)</li>
+<li><strong>Data Blocks</strong>: Stores the actual contents of files</li>
+</ul>
+<h3 id="2-directories-and-paths">2. Directories and Paths</h3>
+<ul>
+<li><strong>Path Types</strong>:
+<ul>
+<li>Absolute Path: Starts from root (<code>/</code>)</li>
+<li>Relative Path: References from current location</li>
+</ul>
+</li>
+<li><strong>Special Directories</strong>:
+<ul>
+<li><code>.</code>: Current directory</li>
+<li><code>..</code>: Parent directory</li>
+<li><code>/dev</code>: Device files</li>
+<li><code>/proc</code>: Process information</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-file-types-and-permissions">3. File Types and Permissions</h3>
+<h4 id="file-types">File Types</h4>
+<ul>
+<li>Regular Files (<code>-</code>): Standard data files</li>
+<li>Directories (<code>d</code>): Contains file entries</li>
+<li>Symbolic Links (<code>l</code>): Soft links to other files</li>
+<li>Block Devices (<code>b</code>): Block-oriented device files</li>
+<li>Character Devices (<code>c</code>): Character-oriented device files</li>
+<li>Special Files:
+<ul>
+<li>Sockets: Inter-process communication</li>
+<li>FIFO: Named pipes</li>
+</ul>
+</li>
+</ul>
+<h4 id="permission-system">Permission System</h4>
+<ul>
+<li><strong>Access Rights</strong> (<code>rwx</code>):
+<ul>
+<li>Read, Write, Execute permissions for:
+<ul>
+<li>User (owner)</li>
+<li>Group</li>
+<li>Others</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Permission Management</strong>:
+<ul>
+<li><code>chmod</code>: Change file permissions</li>
+<li><code>chown</code>: Change file ownership</li>
+<li><code>umask</code>: Set default permissions</li>
+</ul>
+</li>
+<li><strong>Special Permissions</strong>:
+<ul>
+<li>SUID (Set User ID)</li>
+<li>SGID (Set Group ID)</li>
+<li>Sticky Bit</li>
+</ul>
+</li>
+</ul>
+<h3 id="4-file-metadata">4. File Metadata</h3>
+<p>Each file maintains the following information:</p>
+<ul>
+<li>File size in bytes</li>
+<li>Timestamps:
+<ul>
+<li>Creation time</li>
+<li>Last modification time</li>
+<li>Last access time</li>
+</ul>
+</li>
+<li>Ownership:
+<ul>
+<li>User owner</li>
+<li>Group owner</li>
+</ul>
+</li>
+<li>Permission settings</li>
+<li>Inode number (unique file identifier in Linux)</li>
+</ul>
+              
+
+
+            </div>
+          </div>
+
+          <div id="post-footer" class="post-footer main-content-wrap">
+            
+              
+                
+                
+                  <div class="post-footer-tags">
+                    <span class="text-color-light text-small">TAGGED IN</span><br/>
+                    
+  <a class="tag tag--primary tag--small" href="http://localhost:1313/tags/go-lang/">Go Lang</a>
+
+                  </div>
+                
+              
+            
+            
+<div class="post-actions-wrap">
+  <nav >
+    <ul class="post-actions post-action-nav">
+      
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="http://localhost:1313/posts/lsm/" data-tooltip="LSM Tree Explained" aria-label="NEXT: LSM Tree Explained">
+          
+              <i class="fa fa-angle-left"></i>
+              <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+            </a>
+        </li>
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="http://localhost:1313/posts/entropy_ransome/" data-tooltip="How file entropy can help in identifying ransomware attack" aria-label="PREVIOUS: How file entropy can help in identifying ransomware attack">
+          
+              <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+              <i class="fa fa-angle-right"></i>
+            </a>
+        </li>
+      
+    </ul>
+  </nav>
+<ul class="post-actions post-action-share" >
+  
+    <li class="post-action hide-lg hide-md hide-sm">
+      <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+        <i class="fa fa-share-alt" aria-hidden="true"></i>
+      </a>
+    </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:1313/posts/file_system/" title="Share on Facebook" aria-label="Share on Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://localhost:1313/posts/file_system/" title="Share on Twitter" aria-label="Share on Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=http://localhost:1313/posts/file_system/" title="Share on Linkedin" aria-label="Share on Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+  
+  
+  <li class="post-action">
+    
+      <a class="post-action-btn btn btn--default" href="#top" aria-label="Back to top">
+      <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    
+    </a>
+  </li>
+</ul>
+</div>
+
+
+            
+  
+
+
+          </div>
+        </article>
+        <footer id="footer" class="main-content-wrap">
+  <span class="copyrights">
+    &copy; 2025 Pallavi &amp; Shubham. All Rights Reserved
+  </span>
+</footer>
+
+      </div>
+      <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+        
+<div class="post-actions-wrap">
+  <nav >
+    <ul class="post-actions post-action-nav">
+      
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="http://localhost:1313/posts/lsm/" data-tooltip="LSM Tree Explained" aria-label="NEXT: LSM Tree Explained">
+          
+              <i class="fa fa-angle-left"></i>
+              <span class="hide-xs hide-sm text-small icon-ml">NEXT</span>
+            </a>
+        </li>
+        <li class="post-action">
+          
+            <a class="post-action-btn btn btn--default tooltip--top" href="http://localhost:1313/posts/entropy_ransome/" data-tooltip="How file entropy can help in identifying ransomware attack" aria-label="PREVIOUS: How file entropy can help in identifying ransomware attack">
+          
+              <span class="hide-xs hide-sm text-small icon-mr">PREVIOUS</span>
+              <i class="fa fa-angle-right"></i>
+            </a>
+        </li>
+      
+    </ul>
+  </nav>
+<ul class="post-actions post-action-share" >
+  
+    <li class="post-action hide-lg hide-md hide-sm">
+      <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+        <i class="fa fa-share-alt" aria-hidden="true"></i>
+      </a>
+    </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:1313/posts/file_system/" title="Share on Facebook" aria-label="Share on Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://twitter.com/intent/tweet?text=http://localhost:1313/posts/file_system/" title="Share on Twitter" aria-label="Share on Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+      <li class="post-action hide-xs">
+        <a class="post-action-btn btn btn--default" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=http://localhost:1313/posts/file_system/" title="Share on Linkedin" aria-label="Share on Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i>
+        </a>
+      </li>
+    
+  
+  
+  <li class="post-action">
+    
+      <a class="post-action-btn btn btn--default" href="#top" aria-label="Back to top">
+      <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    
+    </a>
+  </li>
+</ul>
+</div>
+
+
+      </div>
+      
+<div id="share-options-bar" class="share-options-bar" data-behavior="4">
+  <i id="btn-close-shareoptions" class="fa fa-times"></i>
+  <ul class="share-options">
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Flocalhost%3A1313%2Fposts%2Ffile_system%2F" aria-label="Share on Facebook">
+          <i class="fab fa-facebook-square" aria-hidden="true"></i><span>Share on Facebook</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://twitter.com/intent/tweet?text=http%3A%2F%2Flocalhost%3A1313%2Fposts%2Ffile_system%2F" aria-label="Share on Twitter">
+          <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+        </a>
+      </li>
+    
+      <li class="share-option">
+        <a class="share-option-btn" target="new" href="https://www.linkedin.com/sharing/share-offsite/?url=http%3A%2F%2Flocalhost%3A1313%2Fposts%2Ffile_system%2F" aria-label="Share on Linkedin">
+          <i class="fab fa-linkedin" aria-hidden="true"></i><span>Share on Linkedin</span>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+<div id="share-options-mask" class="share-options-mask"></div>
+
+
+    </div>
+
+    
+    <div id="about">
+  <div id="about-card">
+    <div id="about-btn-close">
+      <i class="fa fa-times"></i>
+    </div>
+
+
+
+
+    <img id="about-card-picture" src="https://myperflab.co.in/images/dp_new.png" alt="author xxx" />
+
+
+    
+    <h4 id="about-card-name">Pallavi &amp; Shubham</h4>
+    
+      <div id="about-card-bio">Super cool Performance Engineer duo in love with each other</div>
+    
+
+
+
+
+
+
+
+    <div id="about-card-link_p"><p>Connect with them on linkedin </p><a href=https://www.linkedin.com/in/pallavi-shinde-35704764/>Pallavi Shinde</a><p> </p> <a href=https://www.linkedin.com/in/shubham-sachan-74012058/>Shubham Sachan</a>
+    </div>
+
+
+
+
+
+
+
+  </div>
+</div>
+
+    
+
+    
+  
+    
+      <div id="cover" style="background-image:url('http://localhost:1313/images/cover.jpg');"></div>
+    
+  
+
+
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/highlight.min.js" integrity="sha512-z+/WWfyD5tccCukM4VvONpEtLmbAm5LDu7eKiyMQJ9m7OfPEDL7gENyDRL3Yfe8XAuGsS2fS4xSMnl6d30kqGQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha512-uURl+ZXMBrF4AwGaWmEetzrd+J5/8NRkWAvJx5sbPSSuOb0bZLqf+tOzniObO00BjHa/dD7gub9oCGMLPQHtQA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+<script src="http://localhost:1313/js/js_script_for_theme.min.js"></script>
+
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-gE8KAQyFIzV1C9+GZ8TKJHZS2s+n7EjNtC+IMRn1l5+WYJTHOODUM6JSjZhFhqXmc7bG8Av6XXpckA4tYhflnw==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/apache.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-EWROca+bote+7Oaaar1F6y74iZj1r1F9rm/ly7o+/FwJopbBaWtsFDmaKoZDd3QiGU2pGacBirHJNivmGLYrow==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/go.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-GDVzAn0wpx1yVtQsRWmFc6PhJiLBPdUic+h4GWgljBh904O3JU10fk9EKNpVyIoPqkFn54rgL2QBG4BmUTMpiQ==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/http.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-UgZlma8NzkrDb/NWgmLIcTrH7i/CSnLLDRFqCSNF5NGPpjKmzyM25qcoXGOup8+cDakKyaiTDd7N4dyH4YT+IA==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/less.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-lot9koe73sfXIrUvIPM/UEhuMciN56RPyBdOyZgfO53P2lkWyyXN7J+njcxIIBRV+nVDQeiWtiXg+bLAJZDTfg==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/nginx.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-Zd3e7XxHP00TD0Imr0PIfeM0fl0v95kMWuhyAS3Wn1UTSXTkz0OhtRgBAr4JlmADRgiXr4x7lpeUdqaGN8xIog==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/puppet.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-qtqDO052iXMSP+5d/aE/jMtL9vIIGvONgTJziC2K/ZIB1yEGa55WVxGE9/08rSQ62EoDifS9SWVGZ7ihSLhzMA==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/scss.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-1NmkjnEDnwwwcu28KoQF8vs3oaPFokQHbmbtwGhFfeDsQZtVFI8zW2aE9O8yMYdpdyKV/5blE4pSWw4Z/Sv97w==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/stylus.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-B2wSfruPjr8EJL6IIzQr1eAuDwrsfIfccNf/LCEdxELCgC/S/ZMt/Uvk80aD79m7IqOqW+Sw8nbkvha20yZpzg==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/swift.min.js"></script>
+  
+
+  
+    <script async crossorigin="anonymous" defer integrity="sha512-28oDiQZGKUVN6wQ7PSLPNipOcmkCALXKwOi7bnkyFf8QiMZQxG9EQoy/iiNx6Zxj2cG2SbVa4dXKigQhu7GiFw==" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.1.0/languages/yaml.min.js"></script>
+  
+
+
+<script>
+$(document).ready(function() {
+  hljs.configure({ classPrefix: '', useBR: false });
+  $('pre.code-highlight > code, pre > code').each(function(i, block) {
+    if (!$(this).hasClass('codeblock')) {
+      $(this).addClass('codeblock');
+    }
+    hljs.highlightBlock(block);
+  });
+});
+</script>
+
+
+
+
+    
+  </body>
+</html>
+

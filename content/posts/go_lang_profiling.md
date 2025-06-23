@@ -1,7 +1,7 @@
 ---
 title: "Go Code Profiling Guide with Examples"
 thumbnailImagePosition: left
-thumbnailImage: /images/s1.jpeg
+thumbnailImage: /images/army_tank.jpg
 date: 2024-12-09
 categories:
 - perf engg

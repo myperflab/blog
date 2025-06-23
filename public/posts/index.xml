@@ -2,59 +2,59 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on myPerfLab</title>
-    <link>http://localhost:38427/posts/</link>
+    <link>http://localhost:1313/posts/</link>
     <description>Recent content in Posts on myPerfLab</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Sat, 10 May 2025 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://localhost:38427/posts/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Welcome to myPerfLab</title>
-      <link>http://localhost:38427/posts/welcome-page/</link>
+      <link>http://localhost:1313/posts/welcome-page/</link>
       <pubDate>Sat, 10 May 2025 00:00:00 +0000</pubDate>
-      <guid>http://localhost:38427/posts/welcome-page/</guid>
+      <guid>http://localhost:1313/posts/welcome-page/</guid>
       <description>&lt;p&gt;myPerfLab represents the first steps by Pallavi and Shubham to share their knowledge with the community. Through this initiative, they aim to provide insights and recommendations built on years of experience, varied project work, vivid reading &amp;amp; experimentation and continuous learning in performance engineering.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Go Code Profiling Guide with Examples</title>
-      <link>http://localhost:38427/posts/go_lang_profiling/</link>
+      <link>http://localhost:1313/posts/go_lang_profiling/</link>
       <pubDate>Mon, 09 Dec 2024 00:00:00 +0000</pubDate>
-      <guid>http://localhost:38427/posts/go_lang_profiling/</guid>
+      <guid>http://localhost:1313/posts/go_lang_profiling/</guid>
       <description>A perf engineer&amp;rsquo;s best companions are profiling tools which can help them to reveal the bottlenecs of the application. There are a variety of the tools\libs are available. In this write-up we will discuss about how golang libs\tools can be used and how much effective + powerfull they are at capturing the profiles of the code\application which can be used for analysis to identify the bottlenecks.&#xA;Go Provides built-in tools for profiling CPU, memory, goroutines, and more through the pprof and runtime packages.</description>
     </item>
     <item>
       <title>LSM Tree Explained</title>
-      <link>http://localhost:38427/posts/lsm/</link>
+      <link>http://localhost:1313/posts/lsm/</link>
       <pubDate>Thu, 24 Oct 2024 00:00:00 +0000</pubDate>
-      <guid>http://localhost:38427/posts/lsm/</guid>
+      <guid>http://localhost:1313/posts/lsm/</guid>
       <description>LSM Tree &amp;ndash; Log-Structured Merge Tree&#xA;An LSM Tree is a data structure commonly used in databases to efficiently handle high-volume write operations. It’s particularly popular in systems where data is mostly written in large quantities (e.g., time-series databases, key-value stores, and log management systems). LSM Tree works by organizing data in layers and leveraging a combination of in-memory and on-disk data structures to ensure highly writes efficient without dropping read speed.</description>
     </item>
     <item>
       <title>How file entropy can help in identifying ransomware attack</title>
-      <link>http://localhost:38427/posts/entropy_ransome/</link>
+      <link>http://localhost:1313/posts/entropy_ransome/</link>
       <pubDate>Tue, 10 Jan 2023 00:00:00 +0000</pubDate>
-      <guid>http://localhost:38427/posts/entropy_ransome/</guid>
+      <guid>http://localhost:1313/posts/entropy_ransome/</guid>
       <description>Data security getting important than ever, more often ransomware attack happens and some time its severity is very high and critical. Organizations\Enterprises has no other option except paying the ransom. Recently I have stumbled on a very good blog/article about how file entropy can be used as a good measure to restrict and identify such attacks. Click here to read more. Those who are new to data security, entropy, file signature or packers can read below to form initial understanding:</description>
     </item>
     <item>
       <title>How to resolve missing Perf Counters/Metrics from PerfMon in EC2 - Windows (AWS)</title>
-      <link>http://localhost:38427/posts/missing-perf-counters-from-win-ec2/</link>
+      <link>http://localhost:1313/posts/missing-perf-counters-from-win-ec2/</link>
       <pubDate>Thu, 10 Nov 2022 00:00:00 +0000</pubDate>
-      <guid>http://localhost:38427/posts/missing-perf-counters-from-win-ec2/</guid>
+      <guid>http://localhost:1313/posts/missing-perf-counters-from-win-ec2/</guid>
       <description>While working on aws windows ec2 instance, i have observed that, sometimes, not all the perfmon perf Counters/metrics are available, and error appear when perfmon starts, see below image. Click here to read more</description>
     </item>
     <item>
       <title>Who is faster - Asyncio / MultiThreading / MultiProcessing / Sync in Python</title>
-      <link>http://localhost:38427/posts/who-is-faster/</link>
+      <link>http://localhost:1313/posts/who-is-faster/</link>
       <pubDate>Sat, 15 Oct 2022 00:00:00 +0000</pubDate>
-      <guid>http://localhost:38427/posts/who-is-faster/</guid>
+      <guid>http://localhost:1313/posts/who-is-faster/</guid>
       <description>As a curious performance engineer we always want to find out the fastest method and implement/advise the same to get the maximum performance. Click here to read more</description>
     </item>
     <item>
       <title>PE - Disk performance</title>
-      <link>http://localhost:38427/posts/fio/</link>
+      <link>http://localhost:1313/posts/fio/</link>
       <pubDate>Wed, 20 Apr 2022 00:00:00 +0000</pubDate>
-      <guid>http://localhost:38427/posts/fio/</guid>
+      <guid>http://localhost:1313/posts/fio/</guid>
       <description>Post performance test execution, the most common task we do is analyzing the server side performance metrics of the underlying hardware, performance statistics of the application (if we are capturing any) and client side performance metrics.&#xA;And if test results are meeting the SLA, well, shutdown the laptop and take a nap 😝&#xA;But in case SLA are not being met, we have two ways to look for :&#xA;Hardware performance and capacity Application architecture and bottlenecks Option#1: Hardware performance and capacity We usually capture the server side underlying hardware performance metrics which includes (basic ones) are CPU, Memory, Network and Disk performance stats.</description>
     </item>
   </channel>

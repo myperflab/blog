@@ -2,31 +2,31 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Perf Engg on myPerfLab</title>
-    <link>http://localhost:38427/categories/perf-engg/</link>
+    <link>http://localhost:1313/categories/perf-engg/</link>
     <description>Recent content in Perf Engg on myPerfLab</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Mon, 09 Dec 2024 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://localhost:38427/categories/perf-engg/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/categories/perf-engg/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Go Code Profiling Guide with Examples</title>
-      <link>http://localhost:38427/posts/go_lang_profiling/</link>
+      <link>http://localhost:1313/posts/go_lang_profiling/</link>
       <pubDate>Mon, 09 Dec 2024 00:00:00 +0000</pubDate>
-      <guid>http://localhost:38427/posts/go_lang_profiling/</guid>
+      <guid>http://localhost:1313/posts/go_lang_profiling/</guid>
       <description>A perf engineer&amp;rsquo;s best companions are profiling tools which can help them to reveal the bottlenecs of the application. There are a variety of the tools\libs are available. In this write-up we will discuss about how golang libs\tools can be used and how much effective + powerfull they are at capturing the profiles of the code\application which can be used for analysis to identify the bottlenecks.&#xA;Go Provides built-in tools for profiling CPU, memory, goroutines, and more through the pprof and runtime packages.</description>
     </item>
     <item>
       <title>How to resolve missing Perf Counters/Metrics from PerfMon in EC2 - Windows (AWS)</title>
-      <link>http://localhost:38427/posts/missing-perf-counters-from-win-ec2/</link>
+      <link>http://localhost:1313/posts/missing-perf-counters-from-win-ec2/</link>
       <pubDate>Thu, 10 Nov 2022 00:00:00 +0000</pubDate>
-      <guid>http://localhost:38427/posts/missing-perf-counters-from-win-ec2/</guid>
+      <guid>http://localhost:1313/posts/missing-perf-counters-from-win-ec2/</guid>
       <description>While working on aws windows ec2 instance, i have observed that, sometimes, not all the perfmon perf Counters/metrics are available, and error appear when perfmon starts, see below image. Click here to read more</description>
     </item>
     <item>
       <title>PE - Disk performance</title>
-      <link>http://localhost:38427/posts/fio/</link>
+      <link>http://localhost:1313/posts/fio/</link>
       <pubDate>Wed, 20 Apr 2022 00:00:00 +0000</pubDate>
-      <guid>http://localhost:38427/posts/fio/</guid>
+      <guid>http://localhost:1313/posts/fio/</guid>
       <description>Post performance test execution, the most common task we do is analyzing the server side performance metrics of the underlying hardware, performance statistics of the application (if we are capturing any) and client side performance metrics.&#xA;And if test results are meeting the SLA, well, shutdown the laptop and take a nap 😝&#xA;But in case SLA are not being met, we have two ways to look for :&#xA;Hardware performance and capacity Application architecture and bottlenecks Option#1: Hardware performance and capacity We usually capture the server side underlying hardware performance metrics which includes (basic ones) are CPU, Memory, Network and Disk performance stats.</description>
     </item>
   </channel>
